@@ -14,4 +14,6 @@ https://github.com/TheHWcave/DPS5005-control
 which Require pyserial
 pip install pyserial
 
-TKinter/QT designer for GUI ?
+TKinter for GUI 
+
+Pillow imagin library
