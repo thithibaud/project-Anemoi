@@ -105,7 +105,7 @@ def crear_txt():
     nombre = user + '_'+ time.strftime('%c') + '.txt'    #el nombre del archivo será: nombre + día año + hora
     arch = open(nombre, 'w')                                            #se abre el archivo para escritura
     fecha = time.strftime('%c')                                         #se pide la fecha y hora al sistema
-    arch.write(fecha+'\n'+user+'\n')                           #la primera línea del archivo creado contendrá la fecha, nombre y apellidos
+    arch.write(fecha+'\n'+user+'\n')                                     #la primera línea del archivo creado contendrá la fecha, nombre y apellidos
     arch.close()                                                        #se cierra el archivo
 
 #def convertir_ppm():
