@@ -31,6 +31,6 @@ serial_num_dropdown.pack(pady=10)
 button = tk.Button(root, text='Select', command=get_selected_mfc)
 button.pack(pady=10)
 
-    def run_login_script(self):
+# run the GUI window
+root.mainloop()
 
-                                    
