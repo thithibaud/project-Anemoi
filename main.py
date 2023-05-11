@@ -5,10 +5,11 @@ import os
 from tkinter import messagebox
 
 
+
 class CredentialGUI:
     def __init__(self, parent):
         self.parent = parent
-        self.parent.title('MinoS MassFlow Controller')
+        self.parent.title('MinoS MassFlow Controller login')
 
         # Creating the frames
         self.image_frame = tk.LabelFrame(self.parent)
@@ -69,4 +70,5 @@ if __name__ == '__main__':
     root = tk.Tk()
     gui = CredentialGUI(root)
     center_window(root)
+    root.resizable(False, False) 
     root.mainloop()
