@@ -1,39 +1,37 @@
+#!/usr/bin/env python3
 import tkinter as tk
-from tkinter import ttk
+import tkinter.ttk as ttk
+import os
+from tkinter import messagebox
 
-def update_options(*args):
-    selected_option = var1.get()
-    menu1['menu'].delete(0, 'end')
-    menu2['menu'].delete(0, 'end')
-    for option in options:
-        if option != selected_option:
-            menu1['menu'].add_command(label=option, command=tk._setit(var1, option))
-            menu2['menu'].add_command(label=option, command=tk._setit(var2, option))
+class CredentialGUI:
+    def __init__(self, parent):
+        self.parent = parent
+        self.parent.title('MinoS MassFlow Controller Login')
 
-root = tk.Tk()
-root.title("Dropdown Menus")
+        # Creating the frames
+        self.image_frame = tk.LabelFrame(self.parent, bg='#ffffff', highlightbackground='#cccccc', highlightcolor='#cccccc', highlightthickness=1, padx=10, pady=10)
+        self.image_frame.grid(row=0, column=0, columnspan=2)
 
-# Define the options
-options = ['Option 1', 'Option 2', 'Option 3', 'Option 4']
+        self.login_frame = tk.LabelFrame(self.parent, text='Login Information', font=('Helvetica', 12), fg='#333333', bg='#ffffff', highlightbackground='#cccccc', highlightcolor='#cccccc', highlightthickness=1, padx=10, pady=10)
+        self.login_frame.grid(row=1, column=0, columnspan=2)
 
-# Create the variables to store the selected values
-var1 = tk.StringVar(root)
-var2 = tk.StringVar(root)
+        # Adding the image
+        image = tk.PhotoImage(file='image/logominos.png')
+        image_label = tk.Label(self.image_frame, image=image, bg='#ffffff')
+        image_label.image = image
+        image_label.pack(padx=10, pady=10)
 
-# Set the initial values
-var1.set(options[0])
-var2.set(options[0])
+        # Adding the login form
+        tk.Label(self.login_frame, text='User ID:', font=('Helvetica', 12), fg='#333333', bg='#ffffff').grid(row=0, column=0, sticky='w', padx=10, pady=10)
+        self.user_id_entry = tk.Entry(self.login_frame, font=('Helvetica', 12), bg='#f0f0f0', fg='#333333', highlightbackground='#cccccc', highlightcolor='#cccccc', highlightthickness=1)
+        self.user_id_entry.grid(row=0, column=1, padx=10, pady=10)
 
-# Create the first dropdown menu
-label1 = ttk.Label(root, text="Menu 1:")
-label1.pack()
-menu1 = ttk.OptionMenu(root, var1, *options, command=update_options)
-menu1.pack()
+        tk.Label(self.login_frame, text='Password:', font=('Helvetica', 12), fg='#333333', bg='#ffffff').grid(row=1, column=0, sticky='w', padx=10, pady=10)
+        self.password_entry = tk.Entry(self.login_frame, show='*', font=('Helvetica', 12), bg='#f0f0f0', fg='#333333', highlightbackground='#cccccc', highlightcolor='#cccccc', highlightthickness=1)
+        self.password_entry.grid(row=1, column=1, padx=10, pady=10)
 
-# Create the second dropdown menu
-label2 = ttk.Label(root, text="Menu 2:")
-label2.pack()
-menu2 = ttk.OptionMenu(root, var2, *options, command=update_options)
-menu2.pack()
+        self.login_button = ttk.Button(self.login_frame, text='Login', command=self.run_login_script)
+        self.login_button.grid(row=2, columnspan=2, pady=10)
 
-root.mainloop()
+    def run_login_script(self):
