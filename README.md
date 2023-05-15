@@ -1,34 +1,17 @@
-# pydps
-A small helper library using minimalmodbus for the popular dps5005 power supply modules
+Goal:
+Control of 2 mass flow senor and temperature for controled environnement experiment
 
-Dependencies:
-minimalmodbus and serial
+Requirement :
 
+Communication with Bronkhorst (Mass) Flow Meters and Controllers :
+cf communcation.py
 
-Example Usage:
+Control of power supply
+DPS5005-control
+https://github.com/TheHWcave/DPS5005-control
+which Require pyserial
+pip install pyserial
 
-    import pydps
+TKinter for GUI 
 
-    dps = pydps.dps_psu('COM3', 1) # port name, slave address
-
-    print(dps.getModel()) #Should show 5005 for dps5005
-    
-    dps.setKeyLock(True) #Lock keys
-    
-    dps.setVoltage(12) #Set Voltage to 12V
-    dps.setOutput(True) #Enable Output
-    
-    print(dps.getVoltage()) #returns the measured output voltage
-    print(dps.getCurrent()) #Prints measured output current in A
-
-    # or get the full dataset at once:
-
-    dat = dps.getFullData()
-
-    # Contained values: u-set, i-set, u-out, i-out, power, u-in, lock, protect, cvcc, on
-
-    print(dat["power"]) #Prints measured power in W
-    print(dat["i-out"]) #Prints measured output current in A
-    
-    dps.setKeyLock(False) #Unlock keys
-    
+Pillow imagin library
