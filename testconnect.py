@@ -22,16 +22,16 @@ for i in range (0,9):
         node = mflow[h]
         number = elflow.get_serial(node)
         print(number)
-##print(elflow)
-##for i in range(0,9):
-##    node = "0"+str(i)
-##    number = elflow.get_serial(node)
-##    print("node: " + node + "  SN: "+ str(number) )
-##
-##for i in range(10,100):
-##    node = str(i)
-##    number = elflow.get_serial(node)
-##    print("node: " + node + "  SN: "+ str(number) )
+print(elflow)
+for i in range(0,9):
+    node = "0"+str(i)
+    number = elflow.get_serial(node)
+    print("node: " + node + "  SN: "+ str(number) )
+
+for i in range(10,100):
+    node = str(i)
+    number = elflow.get_serial(node)
+    print("node: " + node + "  SN: "+ str(number) )
 node = "0"
 number = elflow.get_serial(node)
 print("node: " + node + "  SN: "+ str(number) )
