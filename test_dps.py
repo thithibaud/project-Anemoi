@@ -9,7 +9,7 @@ def measureSteps(start,stop,step):
     with open('results.csv', 'a') as csv: # open csv file and append
         for v in range(int(start*1000),int((step+stop)*1000),int(step*1000)):
             dps.setVoltage(v*0.001)
-            time.sleep(0.5) #wait for stable voltage
+            time.sleep(1) #wait for stable voltage
             dat=dps.getFullData()
             print(str(dat['u-out'])+"V, "+str(dat['i-out'])+"A")
             csv.write(str(dat['u-out']) + ',' + str(dat['i-out'])+"\n")
@@ -24,7 +24,7 @@ def main():
 
     dps.setVoltage(0)
     dps.setOutput(True)
-    measureSteps(start=0,stop=15,step=0.25)
+    measureSteps(start=0,stop=15,step=0.5)
 
     dps.setOutput(False)
     dps.setKeyLock(False)

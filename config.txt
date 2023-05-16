@@ -1,3 +1,2 @@
-AIR:	00
-GAS:	01
-GAS2:	02
+AIR:02
+GAS:03
