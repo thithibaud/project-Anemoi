@@ -4,18 +4,22 @@ import threading
 import comunicacion as com
 import os
 import multiscript
+import csv
 
 MFCs = {}
 elflow = com.Control_FlowBus('/dev/ttyUSB0')
+os.environ["data_config_filename"]= "MFC_data_config_20230517T1620_test.csv"
 
 def find_MFCs(cancel_event):
     global MFCs
-    total_nodes = 90
-    for i in range(0, 9):
+    total_nodes = 100
+    for i in range(0, total_nodes):
         if cancel_event.is_set():
             break
-        
-        node = "0" + str(i)
+        elif (i <=9):
+            node = "0" + str(i)
+        else:
+            node = str(i)
         number = elflow.get_serial(node)
         if str(number) != "NA":
             print("node: " + node + "  SN: " + str(number))
@@ -28,24 +32,15 @@ def find_MFCs(cancel_event):
         loading_bar.update()
         display_results()
 
-    for i in range(10, 100):
-        if cancel_event.is_set():
-            break
-        
-        node = str(i)
-        number = elflow.get_serial(node)
-        if str(number) != "NA":
-            print("node: " + node + "  SN: " + str(number))
-            if number in MFCs.values():
-                print("An instrument has duplicated nodes")
-            else:
-                MFCs.update({node: number})
-
-        loading_bar["value"] = 9 + (i - 9) * (100 / total_nodes)
-        loading_bar.update()
-        display_results()
-
+    filename = os.environ.get("data_config_filename")
+    with open(filename, "a",  newline="") as file:
+        writer = csv.writer(file, dialect="excel")
+        writer.writerow(["node then SN"])
+        writer.writerow(MFCs.keys())
+        writer.writerow(MFCs.values())
+        writer.writerow(["number of MFC connected",len(MFCs)])
     finish()
+    
 
 def display_results():
     result_text.config(state="normal")
@@ -74,10 +69,16 @@ def cancel_loading():
     result_text.delete("1.0", tk.END)
 
 def finish():
+##    root.state(newstate='withdraw')
+##    command = f'python3 testselec.py'
+##    os.system(command)
+##    root.state(newstate='normal')
     loading_button.config(state="disabled")
     cancel_button.config(state="disabled")
     retry_button.config(state="normal")
     ok_button.config(state="normal")
+    
+    
 
 root = tk.Tk()
 root.title("MFC Finder")
@@ -85,11 +86,11 @@ root.title("MFC Finder")
 frame = ttk.Frame(root, padding="20")
 frame.grid()
 
-loading_bar = ttk.Progressbar(frame, mode="determinate")
-loading_bar.grid(row=0, column=0, columnspan=2, padx=10, pady=10)
-
 result_text = tk.Text(frame, width=40, height=10)
-result_text.grid(row=1, column=0, columnspan=2, padx=10, pady=10)
+result_text.grid(row=0, column=0, columnspan=2, padx=10, pady=10)
+
+loading_bar = ttk.Progressbar(frame,length=300 , mode="determinate")
+loading_bar.grid(row=1, column=0, columnspan=2, padx=10, pady=10)
 
 loading_button = ttk.Button(frame, text="Find MFCs", command=start_loading)
 loading_button.grid(row=2, column=0, padx=5, pady=5)

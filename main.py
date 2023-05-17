@@ -4,11 +4,17 @@ import tkinter.ttk as ttk
 import os
 from tkinter import messagebox
 import csv
-import datetime
+from datetime import datetime
 
-def gen_csv:
-    now = datetime.now
-
+def gen_csv(login,passwd):
+    now = datetime.now()
+    formated_now = now.strftime("%Y%m%dT%H%M")
+    filename = "MFC_data_config_{}_{}.csv".format(formated_now,login)
+    with open(filename, "w", newline="") as file:
+        writer = csv.writer(file, dialect="excel")
+        writer.writerow([login,passwd])
+        os.environ["data_config_filename"]=filename
+        
 class CredentialGUI:
     def __init__(self, parent):
         self.parent = parent
@@ -46,10 +52,14 @@ class CredentialGUI:
         user_id = self.user_id_entry.get()
         password = self.password_entry.get()
 
+        #generate CSV for config data
+        gen_csv(user_id,password)
+        
+
         # Check if the massflow.py script exists before running it
         if os.path.exists('/dev/ttyUSB0'):
             root.state(newstate='withdraw')
-            command = f'python3 testconnectgui.py {user_id} {password}'
+            command = f'python3 testconnectgui.py'
             os.system(command)
             root.state(newstate='normal')
         else:
