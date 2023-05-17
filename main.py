@@ -3,8 +3,11 @@ import tkinter as tk
 import tkinter.ttk as ttk
 import os
 from tkinter import messagebox
+import csv
+import datetime
 
-
+def gen_csv:
+    now = datetime.now
 
 class CredentialGUI:
     def __init__(self, parent):
@@ -46,7 +49,7 @@ class CredentialGUI:
         # Check if the massflow.py script exists before running it
         if os.path.exists('/dev/ttyUSB0'):
             root.state(newstate='withdraw')
-            command = f'python3 massflow.py {user_id} {password}'
+            command = f'python3 testconnectgui.py {user_id} {password}'
             os.system(command)
             root.state(newstate='normal')
         else:

@@ -1,37 +1,35 @@
-#test connection 
+#Find and store MFCs
 import comunicacion as com
 import os
 import multiscript
-#import ConfigMassflow
 
+
+MFCs={}
+j = 0
 
 elflow = com.Control_FlowBus('/dev/ttyUSB0')
-for i in range (0,9):
-    global mflow
-    i = 0
-    j = 0
-    node = "0" + str(i)
-    answer = elflow.send_setpoint(node,0)
-    if answer == b"00005":
-        mflow.append(node)
-        j+=1
-    else:
-        i+=1
-    h = 1
-    for h in range (0,j):
-        node = mflow[h]
-        number = elflow.get_serial(node)
-        print(number)
-print(elflow)
+
+#Looking for Instrument connected from node 0 to 100
 for i in range(0,9):
     node = "0"+str(i)
     number = elflow.get_serial(node)
-    print("node: " + node + "  SN: "+ str(number) )
-
+    if str(number) != "NA":
+        print("node: " + node + "  SN: "+ str(number) )
+        if number in MFCs.values():
+            print("An instrument has duplicated nodes")
+        else:                 
+            MFCs.update({ node : number })
+        
+        
 for i in range(10,100):
     node = str(i)
     number = elflow.get_serial(node)
-    print("node: " + node + "  SN: "+ str(number) )
-node = "0"
-number = elflow.get_serial(node)
-print("node: " + node + "  SN: "+ str(number) )
+    if str(number) !="NA":
+        print("node: " + node + "  SN: "+ str(number) )
+        if number in MFCs.values():
+            print("An instrument has duplicated nodes")
+        else:                 
+            MFCs.update({ node : number })
+
+
+print(MFCs)

@@ -22,9 +22,11 @@ print(instrument.measure)
 # for example the user tag parameter.
 instrument.writeParameter(115, "Hello World!")
 print(instrument.readParameter(115))
-for i in range(0, 200):
+for i in range(0, 500):
     try:
         print(instrument.readParameter(i))
+    except:
+        print()
 
 # Connect to an instrument by specifying the channel number to connect to
 flow = propar.instrument('/dev/ttyUSB0', channel=1)
