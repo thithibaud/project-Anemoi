@@ -2,12 +2,14 @@ import csv
 import tkinter as tk
 from tkinter import filedialog
 import os
+
 def load_csv():
-##    filename = filedialog.askopenfilename(filetypes=[('CSV Files', '*.csv')])
+    #filename = filedialog.askopenfilename(filetypes=[('CSV Files', '*.csv')])
     filename = os.environ.get("data_config_filename")
     if filename:
         with open(filename, 'r') as file:
             reader = csv.reader(file)
+            global data
             data = list(reader)
             try:
                 num_sensors = int(data[4][1])  # Assuming the number is stored in row 5, column 2
@@ -21,14 +23,13 @@ def create_interface(num_sensors):
 
     # Create a list to hold the sensor-gas mappings
     mappings = []
-
     # Create labels and dropdowns for each sensor
     for i in range(num_sensors):
-        label = tk.Label(root, text=f"Sensor {i+1}:")
+        label = tk.Label(root, text=f"Sensor {i+1} with SN{data[3][i]}:")
         label.grid(row=i, column=0, padx=5, pady=5)
 
         # Assuming you have a list of gas options
-        gas_options = ["Gas 1", "Gas 2", "Gas 3"]  # Replace with your own gas options
+        gas_options = ["SA", "Gas 2", "Gas 3"]  # Replace with your own gas options
         var = tk.StringVar(root)
         var.set(gas_options[0])  # Set default value to the first gas option
         dropdown = tk.OptionMenu(root, var, *gas_options)
