@@ -12,7 +12,7 @@ os.environ["data_config_filename"]= "MFC_data_config_20230517T1620_test.csv"
 
 def find_MFCs(cancel_event):
     global MFCs
-    total_nodes = 100
+    total_nodes = 10
     for i in range(0, total_nodes):
         if cancel_event.is_set():
             break
@@ -28,8 +28,9 @@ def find_MFCs(cancel_event):
             else:
                 MFCs.update({node: number})
 
-        loading_bar["value"] = i * (100 / total_nodes)
+        loading_bar["value"] = (i+1) * (100 / total_nodes)
         loading_bar.update()
+        root.update()
         display_results()
 
     filename = os.environ.get("data_config_filename")
@@ -69,16 +70,17 @@ def cancel_loading():
     result_text.delete("1.0", tk.END)
 
 def finish():
-##    root.state(newstate='withdraw')
-##    command = f'python3 testselec.py'
-##    os.system(command)
-##    root.state(newstate='normal')
+    root.update()
     loading_button.config(state="disabled")
     cancel_button.config(state="disabled")
     retry_button.config(state="normal")
     ok_button.config(state="normal")
-    
-    
+
+def ok():
+    root.state(newstate='withdraw')
+    command = 'python3 testselec.py'
+    os.system(command)
+    root.state(newstate='normal')
 
 root = tk.Tk()
 root.title("MFC Finder")
@@ -101,7 +103,7 @@ cancel_button.grid(row=2, column=1, padx=5, pady=5)
 retry_button = ttk.Button(frame, text="Retry", command=cancel_loading, state="disabled")
 retry_button.grid(row=3, column=0, padx=5, pady=5)
 
-ok_button = ttk.Button(frame, text="OK", command=finish, state="disabled")
+ok_button = ttk.Button(frame, text="OK", command=ok, state="disabled")
 ok_button.grid(row=3, column=1, padx=5, pady=5)
 
 root.mainloop()

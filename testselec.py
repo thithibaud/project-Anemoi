@@ -1,7 +1,7 @@
 import csv
 import tkinter as tk
 from tkinter import filedialog
-
+import os
 def load_csv():
 ##    filename = filedialog.askopenfilename(filetypes=[('CSV Files', '*.csv')])
     filename = os.environ.get("data_config_filename")
