@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
+from tkinter import messagebox
 
 import threading
 import comunicacion as com
@@ -32,6 +33,9 @@ def find_MFCs(cancel_event):
         loading_bar.update()
         root.update()
         display_results()
+    if (len(MFCs)==0):
+        error_message = 'Error: MFC not found'
+        tk.messagebox.showerror('Error', error_message)
     
     filename = os.environ.get("data_config_filename")
     if not os.path.exists(filename):

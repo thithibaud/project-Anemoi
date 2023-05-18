@@ -6,7 +6,7 @@ import os
 def load_csv():
     global filename
     filename = os.environ.get("data_config_filename")
-    if not os.path.exists(filename):
+    if not ((filename is not None) and os.path.exists(filename)):
         filename = filedialog.askopenfilename(filetypes=[('CSV Files', '*.csv')])
 
     if filename:
@@ -40,7 +40,7 @@ def create_interface(num_sensors):
         dropdown = tk.OptionMenu(root, var, *gas_options)
         dropdown.grid(row=i, column=1, padx=5, pady=5)
 
-        mappings.append((i+1, var))  # Store the sensor-gas mapping
+        mappings.append((data[3][i], var))  # Store the sensor-gas mapping
 
     # Save button callback function
     def ok():

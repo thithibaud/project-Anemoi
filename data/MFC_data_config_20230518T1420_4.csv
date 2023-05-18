@@ -1,0 +1,11 @@
+4,4
+node then SN
+03,04
+M20209478,M9204338A
+number of MFC connected,2
+Sensor,Gas
+1,SA
+2,gas 1
+Sensor,Gas
+M20209478,SA
+M9204338A,gas 1
