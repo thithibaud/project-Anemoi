@@ -9,7 +9,7 @@ from datetime import datetime
 def gen_csv(login,passwd):
     now = datetime.now()
     formated_now = now.strftime("%Y%m%dT%H%M")
-    filename = "MFC_data_config_{}_{}.csv".format(formated_now,login)
+    filename = "data/MFC_data_config_{}_{}.csv".format(formated_now,login)
     with open(filename, "w", newline="") as file:
         writer = csv.writer(file, dialect="excel")
         writer.writerow([login,passwd])
@@ -56,10 +56,10 @@ class CredentialGUI:
         gen_csv(user_id,password)
         
 
-        # Check if the massflow.py script exists before running it
+        # Check if instrument are connected before running it
         if os.path.exists('/dev/ttyUSB0'):
             root.state(newstate='withdraw')
-            command = f'python3 testconnectgui.py'
+            command = f'python3 connect_mfc.py'
             os.system(command)
             root.state(newstate='normal')
         else:

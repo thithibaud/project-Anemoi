@@ -3,12 +3,11 @@ from tkinter import ttk
 import threading
 import comunicacion as com
 import os
-import multiscript
 import csv
 
 MFCs = {}
 elflow = com.Control_FlowBus('/dev/ttyUSB0')
-os.environ["data_config_filename"]= "MFC_data_config_20230517T1620_test.csv"
+#os.environ["data_config_filename"]= "MFC_data_config_20230517T1620_test.csv"
 
 def find_MFCs(cancel_event):
     global MFCs
@@ -78,7 +77,7 @@ def finish():
 
 def ok():
     root.state(newstate='withdraw')
-    command = 'python3 testselec.py'
+    command = 'python3 select_mfc.py'
     os.system(command)
     root.state(newstate='normal')
 
