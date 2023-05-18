@@ -44,7 +44,7 @@ def create_interface(num_sensors):
 
     # Save button callback function
     def ok():
-        with open(filename, 'w', newline='') as file:
+        with open(filename, 'a', newline='') as file:
             writer = csv.writer(file)
             writer.writerow(['Sensor', 'Gas'])
             for sensor, var in mappings:
