@@ -1,5 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
+from tkinter import filedialog
+
 import threading
 import comunicacion as com
 import os
@@ -30,9 +32,10 @@ def find_MFCs(cancel_event):
         loading_bar.update()
         root.update()
         display_results()
-
+    
     filename = os.environ.get("data_config_filename")
-    #filename = filedialog.askopenfilename(filetypes=[('CSV Files', '*.csv')])
+    if not os.path.exists('filename'):
+        filename = filedialog.asksaveasfile(filetypes=[('CSV Files', '*.csv')])
 
     with open(filename, "a",  newline="") as file:
         writer = csv.writer(file, dialect="excel")

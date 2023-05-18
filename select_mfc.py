@@ -6,7 +6,8 @@ import os
 def load_csv():
     global filename
     filename = os.environ.get("data_config_filename")
-    #filename = filedialog.askopenfilename(filetypes=[('CSV Files', '*.csv')])
+    if not os.path.exists('filename'):
+        filename = filedialog.askopenfilename(filetypes=[('CSV Files', '*.csv')])
 
     if filename:
         with open(filename, 'r') as file:
@@ -30,7 +31,7 @@ def create_interface(num_sensors):
         label = tk.Label(root, text=f"Sensor {i+1} with SN {data[3][i]}:")
         label.grid(row=i, column=0, padx=5, pady=5)
 
-        # Assuming you have a list of gas options
+        # gas options
         gas_options = ["SA"]  # Replace with your own gas options
         for j in range(num_sensors-1):
             gas_options.append(f"gas {j+1}")
