@@ -1,52 +1,102 @@
 import tkinter as tk
 from tkinter import ttk
-from comunicacion import Control_FlowBus  # Import the Control_FlowBus class from your Comunicacion module
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import matplotlib.animation as animation
+import comunicacion as com
 
-class MFCInterface(tk.Tk):
-    def __init__(self):
-        tk.Tk.__init__(self)
-        self.title("MFC Interface")
+# Create an instance of Control_FlowBus
+mfc = com.Control_FlowBus('/dev/ttyUSB0')
 
-        # Create an instance of Control_FlowBus
-        self.mfc = Control_FlowBus('/dev/ttyUSB0')  
+# Create a figure and axis for the graph
+fig = plt.Figure(figsize=(6, 4), dpi=100)
+graph_ax = fig.add_subplot(1, 1, 1)
+line, = graph_ax.plot([], [], 'b-', label='Measurement')
+setpoint_line, = graph_ax.plot([], [], 'r--', label='Setpoint')
+graph_ax.set_xlabel('Time')
+graph_ax.set_ylabel('Measurement')
+graph_ax.legend()
 
-        # Create and configure the widgets
-        self.measure_label = ttk.Label(self, text="Measure:")
-        self.measure_value = ttk.Label(self, text="")
-        self.setpoint_label = ttk.Label(self, text="Setpoint:")
-        self.setpoint_entry = ttk.Entry(self, width=10)
-        self.setpoint_button = ttk.Button(self, text="Set", command=self.set_setpoint)
+# Initialize the graph data
+x_data = []
+y_data = []
+setpoint_data = []
 
-        # Layout the widgets using the grid geometry manager
-        self.measure_label.grid(row=0, column=0, padx=5, pady=5)
-        self.measure_value.grid(row=0, column=1, padx=5, pady=5)
-        self.setpoint_label.grid(row=1, column=0, padx=5, pady=5)
-        self.setpoint_entry.grid(row=1, column=1, padx=5, pady=5)
-        self.setpoint_button.grid(row=1, column=2, padx=5, pady=5)
+# Function to update the measurement value and graph
+def update_measurement():
+    # Get the current measurement and setpoint
+    measurement = mfc.get_mesure("03")
+    setpoint = mfc.get_setpoint("03")
 
-        # Start a thread to update the measure value periodically
-        self.update_measure()
+    # Update the measurement label and setpoint slider
+    measurement_label.config(text=f"Measurement: {measurement}")
+    setpoint_slider.set(setpoint)
 
-    def update_measure(self):
-        # Get the measure from the MFC
-        measure = self.mfc.get_mesure('03')  # Replace '01' with the desired node number
+    # Update the setpoint labels
+    current_setpoint_label.config(text=f"Current Setpoint: {setpoint:.2f}")
+    desired_setpoint_label.config(text=f"Desired Setpoint: {setpoint_slider.get():.2f}")
 
-        # Update the measure value label
-        self.measure_value.config(text=measure)
+    # Update the graph data
+    x_data.append(len(x_data) + 1)
+    y_data.append(float(measurement))
+    setpoint_data.append(float(setpoint))
 
-        # Schedule the next update after 1 second (adjust the interval as needed)
-        self.after(1000, self.update_measure)
+    # Update the graph lines
+    line.set_data(x_data, y_data)
+    setpoint_line.set_data(x_data, setpoint_data)
+    graph_ax.relim()
+    graph_ax.autoscale_view()
 
-    def set_setpoint(self):
-        # Get the setpoint value from the entry widget
-        setpoint = int(self.setpoint_entry.get())
+    # Redraw the graph
+    canvas.draw()
 
-        # Send the setpoint to the MFC
-        self.mfc.send_setpoint('01', setpoint)  # Replace '01' with the desired node number
+    # Schedule the next update
+    root.after(100, update_measurement)
 
-        # Clear the setpoint entry
-        self.setpoint_entry.delete(0, tk.END)
+# Function to set the setpoint
+def set_setpoint(setpoint):
+    setpoint = float(setpoint)  # Convert setpoint to a float
+    mfc.send_setpoint("03", setpoint)
 
-# Create an instance of the MFCInterface class and start the Tkinter event loop
-interface = MFCInterface()
-interface.mainloop()
+# Create the main window
+root = tk.Tk()
+root.title("MFC Control Panel")
+
+# Create a frame for the measurement section
+measurement_frame = ttk.Frame(root, padding=10)
+measurement_frame.pack()
+
+# Create a label to display the measurement
+measurement_label = ttk.Label(measurement_frame, text="Measurement: ")
+measurement_label.pack()
+
+# Create a frame for the setpoint section
+setpoint_frame = ttk.Frame(root, padding=10)
+setpoint_frame.pack()
+
+# Create a label and slider for the setpoint
+setpoint_label = ttk.Label(setpoint_frame, text="Setpoint: ")
+setpoint_label.pack(side=tk.LEFT)
+setpoint_slider = ttk.Scale(setpoint_frame, from_=0, to=100, orient=tk.HORIZONTAL, command=set_setpoint)
+setpoint_slider.pack(side=tk.LEFT)
+
+# Create a frame for the setpoint labels
+setpoint_labels_frame = ttk.Frame(root, padding=10)
+setpoint_labels_frame.pack()
+
+# Create labels for the current and desired setpoints
+current_setpoint_label = ttk.Label(setpoint_labels_frame, text="Current Setpoint: ")
+current_setpoint_label.pack()
+
+desired_setpoint_label = ttk.Label(setpoint_labels_frame, text="Desired Setpoint: ")
+desired_setpoint_label.pack()
+
+# Embed the graph in the Tkinter window
+canvas = FigureCanvasTkAgg(fig, master=root)
+canvas.get_tk_widget().pack()
+
+# Start the measurement update loop
+root.after(100, update_measurement)
+
+# Start the Tkinter event loop
+root.mainloop()

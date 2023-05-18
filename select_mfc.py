@@ -40,13 +40,13 @@ def create_interface(num_sensors):
         dropdown = tk.OptionMenu(root, var, *gas_options)
         dropdown.grid(row=i, column=1, padx=5, pady=5)
 
-        mappings.append((data[3][i], var))  # Store the sensor-gas mapping
+        mappings.append((data[2][i], var))  # Store the node-gas mapping
 
     # Save button callback function
     def ok():
         with open(filename, 'a', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(['Sensor', 'Gas'])
+            writer.writerow(['Sensor node', 'Gas'])
             for sensor, var in mappings:
                 writer.writerow([sensor, var.get()])
         root.state(newstate='withdraw')

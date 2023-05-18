@@ -6,3 +6,6 @@ number of MFC connected,2
 Sensor,Gas
 1,SA
 2,gas 1
+Sensor,Gas
+03,SA
+04,gas 1
