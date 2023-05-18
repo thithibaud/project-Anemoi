@@ -34,9 +34,9 @@ def find_MFCs(cancel_event):
         display_results()
     
     filename = os.environ.get("data_config_filename")
-    if not os.path.exists('filename'):
+    if not os.path.exists(filename):
         filename = filedialog.asksaveasfile(filetypes=[('CSV Files', '*.csv')])
-
+        
     with open(filename, "a",  newline="") as file:
         writer = csv.writer(file, dialect="excel")
         writer.writerow(["node then SN"])
@@ -103,7 +103,7 @@ loading_button.grid(row=2, column=0, padx=5, pady=5)
 cancel_button = ttk.Button(frame, text="Cancel", command=cancel_loading, state="disabled")
 cancel_button.grid(row=2, column=1, padx=5, pady=5)
 
-retry_button = ttk.Button(frame, text="Retry", command=cancel_loading, state="disabled")
+retry_button = ttk.Button(frame, text="Retry", command=start_loading, state="disabled")
 retry_button.grid(row=3, column=0, padx=5, pady=5)
 
 ok_button = ttk.Button(frame, text="OK", command=ok, state="disabled")

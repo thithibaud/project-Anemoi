@@ -6,7 +6,7 @@ import os
 def load_csv():
     global filename
     filename = os.environ.get("data_config_filename")
-    if not os.path.exists('filename'):
+    if not os.path.exists(filename):
         filename = filedialog.askopenfilename(filetypes=[('CSV Files', '*.csv')])
 
     if filename:
@@ -43,17 +43,20 @@ def create_interface(num_sensors):
         mappings.append((i+1, var))  # Store the sensor-gas mapping
 
     # Save button callback function
-    def save_mappings():
+    def ok():
         with open(filename, 'w', newline='') as file:
             writer = csv.writer(file)
             writer.writerow(['Sensor', 'Gas'])
             for sensor, var in mappings:
                 writer.writerow([sensor, var.get()])
-        root.destroy()
+        root.state(newstate='withdraw')
+        command = 'python3 select_mode.py'
+        os.system(command)
+        root.state(newstate='normal')
 
     # Save button
-    save_button = tk.Button(root, text="Save Mappings", command=save_mappings)
-    save_button.grid(row=num_sensors, columnspan=2, padx=5, pady=10)
+    ok_button = tk.Button(root, text="OK", command=ok)
+    ok_button.grid(row=num_sensors, columnspan=2, padx=5, pady=10)
 
     root.mainloop()
 
