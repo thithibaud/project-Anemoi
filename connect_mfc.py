@@ -7,7 +7,6 @@ import csv
 
 MFCs = {}
 elflow = com.Control_FlowBus('/dev/ttyUSB0')
-#os.environ["data_config_filename"]= "MFC_data_config_20230517T1620_test.csv"
 
 def find_MFCs(cancel_event):
     global MFCs
@@ -33,6 +32,8 @@ def find_MFCs(cancel_event):
         display_results()
 
     filename = os.environ.get("data_config_filename")
+    #filename = filedialog.askopenfilename(filetypes=[('CSV Files', '*.csv')])
+
     with open(filename, "a",  newline="") as file:
         writer = csv.writer(file, dialect="excel")
         writer.writerow(["node then SN"])
