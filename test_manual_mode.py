@@ -71,6 +71,12 @@ measurement_frame.pack()
 measurement_label = ttk.Label(measurement_frame, text="Measurement: ")
 measurement_label.pack()
 
+# Create a label to display the capacity and the unit
+capacity = mfc.get_capacity('03')
+unit = mfc.get_unit('03')
+capa_unit_label = ttk.Label(measurement_frame, text=f"capacity:{capacity}{unit}")
+capa_unit_label.pack()
+
 # Create a frame for the setpoint section
 setpoint_frame = ttk.Frame(root, padding=10)
 setpoint_frame.pack()
