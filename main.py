@@ -9,7 +9,7 @@ from datetime import datetime
 def gen_csv(login,passwd):
     now = datetime.now()
     formated_now = now.strftime("%Y%m%dT%H%M")
-    filename = "data/MFC_data_config_{}_{}.csv".format(formated_now,login)
+    filename = "data/MFC_data_config.csv"
     with open(filename, "w", newline="") as file:
         writer = csv.writer(file, dialect="excel")
         writer.writerow([login,passwd])
@@ -51,21 +51,28 @@ class CredentialGUI:
 
         user_id = self.user_id_entry.get()
         password = self.password_entry.get()
-
-        #generate CSV for config data
-        gen_csv(user_id,password)
-        
-
-        # Check if instrument are connected before running it
-        if os.path.exists('/dev/ttyUSB0'):
+        if (user_id == "admin" and password == "admin"):
+            #generate CSV for config data
+            gen_csv(user_id,password)
+            # Check if instrument are connected before running it
+            if os.path.exists('/dev/ttyUSB0'):
+                root.state(newstate='withdraw')
+                command = f'python3 connect_mfc.py'
+                os.system(command)
+                root.state(newstate='normal')
+            else:
+                error_message = 'Error: MFC not found or connected'
+                tk.messagebox.showerror('Error', error_message)
+        else:
+            filename = "data/MFC_data_config.csv"
+            os.environ["data_config_filename"]=filename
+            os.environ["user_id"]=user_id
+            os.environ["password"]=password
             root.state(newstate='withdraw')
-            command = f'python3 connect_mfc.py'
+            command = f'python3 select_mode.py'
             os.system(command)
             root.state(newstate='normal')
-        else:
-            error_message = 'Error: MFC not found or connected'
-            tk.messagebox.showerror('Error', error_message)
-
+            
         # Re-enable the login button after the script has finished running
         self.login_button.config(state='normal')
 
