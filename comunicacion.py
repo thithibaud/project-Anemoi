@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 #-------------------------------------------------------------------------------
-# Name:        ComunicacionBronkhorst
+# Name:        Comunicacion.py
 # Purpose:
 #
 # Author:      Xavi
