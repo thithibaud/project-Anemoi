@@ -16,6 +16,7 @@ setpoint_line, = graph_ax.plot([], [], 'r--', label='Setpoint')
 graph_ax.set_xlabel('Time')
 graph_ax.set_ylabel('Measurement')
 graph_ax.legend()
+graph_ax.grid(True)
 
 # Initialize the graph data
 x_data = []
@@ -77,7 +78,7 @@ setpoint_frame.pack()
 # Create a label and slider for the setpoint
 setpoint_label = ttk.Label(setpoint_frame, text="Setpoint: ")
 setpoint_label.pack(side=tk.LEFT)
-setpoint_slider = ttk.Scale(setpoint_frame, from_=0, to=100, orient=tk.HORIZONTAL, command=set_setpoint)
+setpoint_slider = ttk.Scale(setpoint_frame, from_=0, to=100, orient=tk.HORIZONTAL, command=set_setpoint,length=300)
 setpoint_slider.pack(side=tk.LEFT)
 
 # Create a frame for the setpoint labels
