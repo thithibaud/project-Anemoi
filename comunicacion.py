@@ -30,7 +30,7 @@ class Control_FlowBus(serial.Serial):
         self.stopbits = serial.STOPBITS_ONE     #configuración de bits de stop, un bit
         self.timeout = 1                        #configuración tiempo de espera, 1 ms
 
-    def get_mesure(self, nodo):
+    def get_measurement(self, nodo):
         '''******************************************************
         Realizará una petición de la medida de flujo al MassFlow
         ******************************************************'''

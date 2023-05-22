@@ -3,7 +3,10 @@ import os
 
 # Create a function to run the "manual.py" script
 def run_manual():
-    os.system('python manual.py')
+    root.state(newstate='withdraw')
+    command = 'python3 manual.py'
+    os.system(command)
+    root.state(newstate='normal')
 
 # Create a function to run the "script.py" script
 def run_script():

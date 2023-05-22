@@ -85,7 +85,7 @@ def reset_measurement():
 
 def save_to_csv():
     # Open save file dialog
-    file = filedialog.asksaveasfile(mode='w', defaultextension=".csv", filetypes=(("CSV Files", "*.csv"), ("All Files", "*.*")))
+    file = filedialog.asksaveasfile(parent=root, mode='w', defaultextension=".csv", filetypes=(("CSV Files", "*.csv"), ("All Files", "*.*")))
     if file is None:  # If no file chosen, return
         return
     writer = csv.writer(file, dialect="excel")
@@ -113,7 +113,7 @@ def update_measurement(node):
     if isinstance(node, tuple):
         node = node[0]
     # Get the current measurement and setpoint
-    measurement[node] = mfc.get_mesure(str(node))
+    measurement[node] = mfc.get_measurement(str(node))
     setpoint[node] = mfc.get_setpoint(str(node))
 
     try:
