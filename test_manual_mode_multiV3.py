@@ -7,6 +7,7 @@ import matplotlib.animation as animation
 import comunicacion as com
 import os
 import csv
+import time
 
 # Global variables
 filename = os.environ.get("data_config_filename")
@@ -42,16 +43,19 @@ setpoint_slider = {}
 current_setpoint_label = {}
 desired_setpoint_label = {}
 setpoint_input_entry = {}
+start_time = None
 
 # Initialize a flag for measurement updates
 running = False
 
 def start_measurement():
-    global running
+    global running, start_time
     running = True
     start_button.config(state="disabled")
     stop_button.config(state="normal")
     reset_button.config(state="disabled")
+    save_button.config(state="disabled")
+    start_time = time.time()
     measurement_updates()
 
 def stop_measurement():
@@ -60,6 +64,7 @@ def stop_measurement():
     start_button.config(state="normal")
     stop_button.config(state="disabled")
     reset_button.config(state="normal")
+    save_button.config(state="normal")
 
 def reset_measurement():
     global x_data, y_data, setpoint_data
@@ -75,6 +80,19 @@ def reset_measurement():
     start_button.config(state="normal")
     stop_button.config(state="disabled")
     reset_button.config(state="disabled")
+    save_button.config(state="disabled")
+
+def save_to_csv():
+    # Open save file dialog
+    file = filedialog.asksaveasfile(mode='w', defaultextension=".csv", filetypes=(("CSV Files", "*.csv"), ("All Files", "*.*")))
+    if file is None:  # If no file chosen, return
+        return
+    writer = csv.writer(file)
+    writer.writerow(["Node", "Time", "Measurement", "Setpoint"])  # Writing headers
+    for node in nodes:
+        for i in range(len(x_data[node])):
+            writer.writerow([node, x_data[node][i], y_data[node][i], setpoint_data[node][i]])
+    file.close()
 
 def measurement_updates():
     if running:
@@ -102,33 +120,50 @@ def update_measurement(node):
         current_setpoint_label[node].config(text=f"Current Setpoint: {setpoint_float:.2f}")
         desired_setpoint_label[node].config(text=f"Desired Setpoint: {setpoint_slider[node].get():.2f}")
 
+        #Update time
+        current_time = time.time() - start_time
+        current_time = round(current_time)
         # Update the graph data
         if node not in x_data:
             x_data[node] = []
             y_data[node] = []
             setpoint_data[node] = []
-        x_data[node].append(len(x_data[node]) + 1)
+        x_data[node].append(current_time)
         y_data[node].append(measurement_float)
         setpoint_data[node].append(setpoint_float)
 
         # Update the graph lines
         line[node].set_data(x_data[node], y_data[node])
         setpoint_line[node].set_data(x_data[node], setpoint_data[node])
-        ax.relim()  # Recalculate limits
-        ax.autoscale_view(True,True,True)  # Autoscale the view
+
+        # Recalculate limits
+        ax1.relim()
+        ax2.relim()
+
+        # Autoscale the view
+        ax1.autoscale_view(True,True,True)
+        ax2.autoscale_view(True,True,True)
 
         # Redraw the graph
         canvas.draw()
     except ValueError:
         print(f"Invalid measurement or setpoint value for node {node}")
 
-##    # Schedule the next update
-##    root.after(1000, update_measurement, (node,))  # Pass the function and arguments separately
-
 def set_setpoint(node, setpoint):
     try:
         setpoint = float(setpoint)  # Convert setpoint to a float
         mfc.send_setpoint(str(node), setpoint)
+    except ValueError:
+        print("Invalid setpoint value.")
+
+def set_setpoint_button(node, setpoint):
+    try:
+        setpoint = float(setpoint)  # Convert setpoint to a float
+        mfc.send_setpoint(str(node), setpoint)
+        global running
+        running = True
+        measurement_updates()
+        running = True
     except ValueError:
         print("Invalid setpoint value.")
     else:
@@ -158,7 +193,7 @@ def create_interface(node):
     # Create a label and slider for the setpoint
     setpoint_label = ttk.Label(setpoint_frame, text="Setpoint: ")
     setpoint_label.pack(side=tk.LEFT)
-    setpoint_slider[node] = ttk.Scale(setpoint_frame, from_=0, to=100, orient=tk.HORIZONTAL, length=300,
+    setpoint_slider[node] = ttk.Scale(setpoint_frame, from_=0, to=100, orient=tk.HORIZONTAL, length=500,
                                      command=lambda value, node=node: set_setpoint(node, value))
     setpoint_slider[node].pack(side=tk.LEFT)
 
@@ -180,7 +215,7 @@ def create_interface(node):
 
     # Create a button to set the setpoint to the input value
     setpoint_input_button = ttk.Button(setpoint_input_frame, text="Set",
-                                       command=lambda: set_setpoint(node, setpoint_input_entry[node].get()))
+                                       command=lambda: set_setpoint_button(node, setpoint_input_entry[node].get()))
     setpoint_input_button.pack(side=tk.LEFT)
     
     # Create labels for the current and desired setpoints
@@ -190,21 +225,35 @@ def create_interface(node):
     desired_setpoint_label[node] = ttk.Label(setpoint_labels_frame, text="Desired Setpoint: ")
     desired_setpoint_label[node].pack()
 
-    # Add the graph lines to the legend
-    ax.legend()
+##    # Add the graph lines to the legend
+##    ax.legend()
 
 
-# Create a figure and axis for the graph
-fig, ax = plt.subplots()
-ax.grid(True)  # Add grid to the plot
-graph_ax = ax  # Assign ax to graph_ax
+#Create a figure and two y-axes for the graph
+fig, ax1 = plt.subplots()
+ax2 = ax1.twinx()  # Create a twin y-axis sharing the same x-axis with ax1
+
+ax1.grid(True)  # Add grid to the plot
 
 # Create the measurement labels and setpoint sliders
 line = {}
 setpoint_line = {}
 for node in nodes:
-    line[node], = ax.plot([], [], label=f"Sensor {node}")
-    setpoint_line[node], = ax.plot([], [], label=f"Setpoint {node}")
+    line[node], = ax1.plot([], [], label=f"Sensor {node}")
+    setpoint_line[node], = ax2.plot([], [], label=f"Setpoint {node}", linestyle='--')
+
+# Set labels for axes
+ax1.set_xlabel('Time (s)')
+ax1.set_ylabel('Measurement', color='tab:blue')
+ax2.set_ylabel('Setpoint', color='tab:orange')
+
+# Set colors for labels and ticks
+ax1.tick_params(axis='y', labelcolor='tab:blue')
+ax2.tick_params(axis='y', labelcolor='tab:orange')
+
+# Add legends to each axis
+ax1.legend(loc="upper left")
+ax2.legend(loc="upper right")
 
 # Create the main window
 root = tk.Tk()
@@ -223,7 +272,7 @@ canvas.get_tk_widget().pack()
 button_frame = ttk.Frame(root)
 button_frame.pack(side=tk.BOTTOM)
 
-# Create the start, stop, and reset buttons
+# Create the start, stop,reset buttons and save button
 start_button = ttk.Button(button_frame, text="Start", command=start_measurement, state="normal")
 start_button.pack(side=tk.LEFT)
 
@@ -232,6 +281,9 @@ stop_button.pack(side=tk.LEFT)
 
 reset_button = ttk.Button(button_frame, text="Reset", command=reset_measurement, state="disabled")
 reset_button.pack(side=tk.LEFT)
+
+save_button = ttk.Button(button_frame, text="Save as CSV", command=save_to_csv, state="disabled")
+save_button.pack(side=tk.LEFT)
 
 # Schedule the start of the measurement update loop
 root.after(1000, measurement_updates)

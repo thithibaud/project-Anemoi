@@ -4,10 +4,10 @@ from tkinter import filedialog
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.animation as animation
-from matplotlib.animation import FuncAnimation
 import comunicacion as com
 import os
 import csv
+import time
 
 # Global variables
 filename = os.environ.get("data_config_filename")
@@ -42,19 +42,49 @@ measurement_label = {}
 setpoint_slider = {}
 current_setpoint_label = {}
 desired_setpoint_label = {}
+setpoint_input_entry = {}
+start_time = None
 
+# Initialize a flag for measurement updates
+running = False
 
-# Create a figure and axis for the graph
-fig, ax = plt.subplots()
-graph_ax = ax  # Here, we make sure to assign ax to graph_ax
+def start_measurement():
+    global running, start_time
+    running = True
+    start_button.config(state="disabled")
+    stop_button.config(state="normal")
+    reset_button.config(state="disabled")
+    start_time = time.time()
+    measurement_updates()
 
-# Create the measurement labels and setpoint sliders
-line = {}
-setpoint_line = {}
-for node in nodes:
-    line[node], = ax.plot([], [], label=f"Sensor {node}")
-    setpoint_line[node], = ax.plot([], [], label=f"Setpoint {node}")
+def stop_measurement():
+    global running
+    running = False
+    start_button.config(state="normal")
+    stop_button.config(state="disabled")
+    reset_button.config(state="normal")
 
+def reset_measurement():
+    global x_data, y_data, setpoint_data
+    x_data = {}
+    y_data = {}
+    setpoint_data = {}
+    for node in nodes:
+        line[node].set_data([], [])
+        setpoint_line[node].set_data([], [])
+    ax.relim()  # Recalculate limits
+    ax.autoscale_view(True,True,True)  # Autoscale the view
+    canvas.draw()
+    start_button.config(state="normal")
+    stop_button.config(state="disabled")
+    reset_button.config(state="disabled")
+
+def measurement_updates():
+    if running:
+        for node in nodes:
+            update_measurement((node,))  # node is passed as a single-element tuple
+        root.after(1000, measurement_updates)
+        
 def update_measurement(node):
     if isinstance(node, tuple):
         node = node[0]
@@ -75,12 +105,15 @@ def update_measurement(node):
         current_setpoint_label[node].config(text=f"Current Setpoint: {setpoint_float:.2f}")
         desired_setpoint_label[node].config(text=f"Desired Setpoint: {setpoint_slider[node].get():.2f}")
 
+        #Update time
+        current_time = time.time() - start_time
+        
         # Update the graph data
         if node not in x_data:
             x_data[node] = []
             y_data[node] = []
             setpoint_data[node] = []
-        x_data[node].append(len(x_data[node]) + 1)
+        x_data[node].append(current_time)
         y_data[node].append(measurement_float)
         setpoint_data[node].append(setpoint_float)
 
@@ -88,21 +121,31 @@ def update_measurement(node):
         line[node].set_data(x_data[node], y_data[node])
         setpoint_line[node].set_data(x_data[node], setpoint_data[node])
 
+        # Recalculate limits
+        ax1.relim()
+        ax2.relim()
+
+        # Autoscale the view
+        ax1.autoscale_view(True,True,True)
+        ax2.autoscale_view(True,True,True)
+
         # Redraw the graph
         canvas.draw()
     except ValueError:
         print(f"Invalid measurement or setpoint value for node {node}")
 
-    # Schedule the next update
-    root.after(1000, update_measurement, (node,))  # Pass the function and arguments separately
-
 def set_setpoint(node, setpoint):
-    setpoint = float(setpoint)  # Convert setpoint to a float
-    mfc.send_setpoint(str(node), setpoint)
+    try:
+        setpoint = float(setpoint)  # Convert setpoint to a float
+        mfc.send_setpoint(str(node), setpoint)
+    except ValueError:
+        print("Invalid setpoint value.")
+    else:
+        setpoint_input_entry[node].delete(0, tk.END)  # Clear the entry field if the setpoint was valid
 
 def create_interface(node):
     # Create a frame for the measurement section
-    measurement_frame = ttk.Frame(root, padding=10)
+    measurement_frame = ttk.Frame(root, padding=5)
     measurement_frame.pack()
 
     # Create a label to display the measurement
@@ -118,20 +161,37 @@ def create_interface(node):
     capa_unit_label.pack()
 
     # Create a frame for the setpoint section
-    setpoint_frame = ttk.Frame(root, padding=10)
+    setpoint_frame = ttk.Frame(root, padding=5)
     setpoint_frame.pack()
 
     # Create a label and slider for the setpoint
     setpoint_label = ttk.Label(setpoint_frame, text="Setpoint: ")
     setpoint_label.pack(side=tk.LEFT)
-    setpoint_slider[node] = ttk.Scale(setpoint_frame, from_=0, to=100, orient=tk.HORIZONTAL, length=300,
+    setpoint_slider[node] = ttk.Scale(setpoint_frame, from_=0, to=100, orient=tk.HORIZONTAL, length=500,
                                      command=lambda value, node=node: set_setpoint(node, value))
     setpoint_slider[node].pack(side=tk.LEFT)
 
     # Create a frame for the setpoint labels
-    setpoint_labels_frame = ttk.Frame(root, padding=10)
+    setpoint_labels_frame = ttk.Frame(root, padding=5)
     setpoint_labels_frame.pack()
 
+    # Create a frame for the setpoint input
+    setpoint_input_frame = ttk.Frame(root, padding=5)
+    setpoint_input_frame.pack()
+
+    # Create a label and entry for the setpoint input
+    setpoint_input_label = ttk.Label(setpoint_input_frame, text="Input Setpoint: ")
+    setpoint_input_label.pack(side=tk.LEFT)
+
+    # Create the entry widget and store it in the dictionary
+    setpoint_input_entry[node] = ttk.Entry(setpoint_input_frame)
+    setpoint_input_entry[node].pack(side=tk.LEFT)
+
+    # Create a button to set the setpoint to the input value
+    setpoint_input_button = ttk.Button(setpoint_input_frame, text="Set",
+                                       command=lambda: set_setpoint(node, setpoint_input_entry[node].get()))
+    setpoint_input_button.pack(side=tk.LEFT)
+    
     # Create labels for the current and desired setpoints
     current_setpoint_label[node] = ttk.Label(setpoint_labels_frame, text="Current Setpoint: ")
     current_setpoint_label[node].pack()
@@ -139,33 +199,65 @@ def create_interface(node):
     desired_setpoint_label[node] = ttk.Label(setpoint_labels_frame, text="Desired Setpoint: ")
     desired_setpoint_label[node].pack()
 
-    # Add the graph lines to the legend
-    ax.legend()
+##    # Add the graph lines to the legend
+##    ax.legend()
 
-def start_measurement_updates():
-    for node in nodes:
-        update_measurement((node,))  # node is passed as a single-element tuple
 
-def animate(i):
-    for node in nodes:
-        update_measurement(node)
-        
-# Create a figure and axis for the graph
-fig, ax = plt.subplots()
+#Create a figure and two y-axes for the graph
+fig, ax1 = plt.subplots()
+ax2 = ax1.twinx()  # Create a twin y-axis sharing the same x-axis with ax1
+
+ax1.grid(True)  # Add grid to the plot
+
+# Create the measurement labels and setpoint sliders
+line = {}
+setpoint_line = {}
+for node in nodes:
+    line[node], = ax1.plot([], [], label=f"Sensor {node}")
+    setpoint_line[node], = ax2.plot([], [], label=f"Setpoint {node}", linestyle='--')
+
+# Set labels for axes
+ax1.set_xlabel('Time (s)')
+ax1.set_ylabel('Measurement', color='tab:blue')
+ax2.set_ylabel('Setpoint', color='tab:orange')
+
+# Set colors for labels and ticks
+ax1.tick_params(axis='y', labelcolor='tab:blue')
+ax2.tick_params(axis='y', labelcolor='tab:orange')
+
+# Add legends to each axis
+ax1.legend(loc="upper left")
+ax2.legend(loc="upper right")
 
 # Create the main window
 root = tk.Tk()
 root.title("Mass Flow Sensor Configuration")
 
-ani = FuncAnimation(fig, animate, interval=1000)  # update every 1s
+
+# Create the measurement labels and setpoint sliders
+for node in nodes:
+    create_interface(node)
 
 # Embed the graph in the Tkinter window
 canvas = FigureCanvasTkAgg(fig, master=root)
 canvas.get_tk_widget().pack()
 
-# Create the measurement labels and setpoint sliders
-for node in nodes:
-    create_interface(node)
+# Create a frame for the buttons
+button_frame = ttk.Frame(root)
+button_frame.pack(side=tk.BOTTOM)
+
+# Create the start, stop, and reset buttons
+start_button = ttk.Button(button_frame, text="Start", command=start_measurement, state="normal")
+start_button.pack(side=tk.LEFT)
+
+stop_button = ttk.Button(button_frame, text="Stop", command=stop_measurement, state="disabled")
+stop_button.pack(side=tk.LEFT)
+
+reset_button = ttk.Button(button_frame, text="Reset", command=reset_measurement, state="disabled")
+reset_button.pack(side=tk.LEFT)
+
+# Schedule the start of the measurement update loop
+root.after(1000, measurement_updates)
 
 # Start the Tkinter event loop
 root.mainloop()
