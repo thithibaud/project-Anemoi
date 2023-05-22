@@ -3,13 +3,11 @@ import tkinter as tk
 import tkinter.ttk as ttk
 import os
 from tkinter import messagebox
+from tkinter import filedialog
 import csv
-from datetime import datetime
 
 def gen_csv(login,passwd):
-    now = datetime.now()
-    formated_now = now.strftime("%Y%m%dT%H%M")
-    filename = "data/MFC_data_config.csv"
+    filename = filedialog.asksaveasfilename(defaultextension=".csv", filetypes=(("CSV Files", "*.csv"), ("All Files", "*.*")))
     with open(filename, "w", newline="") as file:
         writer = csv.writer(file, dialect="excel")
         writer.writerow([login,passwd])

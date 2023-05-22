@@ -8,8 +8,9 @@ import comunicacion as com
 import os
 import csv
 import time
+from datetime import datetime
 
-# Global variables
+#os variable
 filename = os.environ.get("data_config_filename")
 if not ((filename is not None) and os.path.exists(filename)):
     filename = filedialog.askopenfilename(filetypes=[('CSV Files', '*.csv')])
@@ -87,7 +88,15 @@ def save_to_csv():
     file = filedialog.asksaveasfile(mode='w', defaultextension=".csv", filetypes=(("CSV Files", "*.csv"), ("All Files", "*.*")))
     if file is None:  # If no file chosen, return
         return
-    writer = csv.writer(file)
+    writer = csv.writer(file, dialect="excel")
+    user_id = "login"
+    try:
+        user_id = os.environ["user_id"]
+    except:
+        print("no login saved")
+    now = datetime.now()
+    formated_now = now.strftime("%Y%m%dT%H%M") # Date formated to follow ISO 8601
+    writer.writerow([user_id,formated_now],)  # Writing headers
     writer.writerow(["Node", "Time", "Measurement", "Setpoint"])  # Writing headers
     for node in nodes:
         for i in range(len(x_data[node])):
@@ -160,10 +169,6 @@ def set_setpoint_button(node, setpoint):
     try:
         setpoint = float(setpoint)  # Convert setpoint to a float
         mfc.send_setpoint(str(node), setpoint)
-        global running
-        running = True
-        measurement_updates()
-        running = True
     except ValueError:
         print("Invalid setpoint value.")
     else:
