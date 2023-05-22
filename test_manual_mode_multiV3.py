@@ -166,8 +166,6 @@ def create_interface(node):
     setpoint_labels_frame = ttk.Frame(root, padding=5)
     setpoint_labels_frame.pack()
 
-
-
     # Create a frame for the setpoint input
     setpoint_input_frame = ttk.Frame(root, padding=5)
     setpoint_input_frame.pack()
@@ -185,9 +183,6 @@ def create_interface(node):
                                        command=lambda: set_setpoint(node, setpoint_input_entry[node].get()))
     setpoint_input_button.pack(side=tk.LEFT)
     
-
-
-
     # Create labels for the current and desired setpoints
     current_setpoint_label[node] = ttk.Label(setpoint_labels_frame, text="Current Setpoint: ")
     current_setpoint_label[node].pack()
