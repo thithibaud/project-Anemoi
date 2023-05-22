@@ -11,6 +11,11 @@ import csv
 MFCs = {}
 elflow = com.Control_FlowBus('/dev/ttyUSB0')
 
+print(elflow.get_measurement("03"))
+print(elflow.get_setpoint("03"))
+print(elflow.get_serial("03"))
+print(elflow.get_capacity("03"))
+print(elflow.get_unit("03"))
 def find_MFCs(cancel_event):
     global MFCs
     total_nodes = 10
@@ -22,8 +27,10 @@ def find_MFCs(cancel_event):
         else:
             node = str(i)
         number = elflow.get_serial(node)
+        capacity = elflow.get_capacity(node)
+        unit = elflow.get_unit(node)
         if str(number) != "NA":
-            print("node: " + node + "  SN: " + str(number))
+            print("node: " + node + "  SN: " + str(number)+ " capacity: " +str(capacity)+ unit)
             if number in MFCs.values():
                 print("An instrument has duplicated nodes")
             else:
@@ -54,7 +61,9 @@ def display_results():
     result_text.config(state="normal")
     result_text.delete("1.0", tk.END)
     for node, number in MFCs.items():
-        result_text.insert(tk.END, "Node: " + node + "  SN: " + str(number) + "\n")
+        capacity = elflow.get_capacity(node)
+        unit = elflow.get_unit(node)
+        result_text.insert(tk.END, "Node: " + node + "  SN: " + str(number) + " capacity: " + str(capacity)+ unit + "\n")
     result_text.config(state="disabled")
 
 def start_loading():
@@ -95,10 +104,10 @@ root.title("MFC Finder")
 frame = ttk.Frame(root, padding="20")
 frame.grid()
 
-result_text = tk.Text(frame, width=40, height=10)
+result_text = tk.Text(frame, width=50, height=10)
 result_text.grid(row=0, column=0, columnspan=2, padx=10, pady=10)
 
-loading_bar = ttk.Progressbar(frame,length=300 , mode="determinate")
+loading_bar = ttk.Progressbar(frame,length=400 , mode="determinate")
 loading_bar.grid(row=1, column=0, columnspan=2, padx=10, pady=10)
 
 loading_button = ttk.Button(frame, text="Find MFCs", command=start_loading)
