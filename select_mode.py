@@ -12,8 +12,11 @@ def run_manual():
 
 # Create a function to run the "script.py" script
 def run_script():
-    os.system('python script.py')
-
+    root.state(newstate='withdraw')
+    command = 'python3 script.py'
+    os.system(command)
+    root.state(newstate='normal')
+    
 # Create the main window
 root = tk.Tk()
 sv_ttk.use_light_theme()
