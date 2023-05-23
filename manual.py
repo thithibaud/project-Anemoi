@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
+import sv_ttk
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.animation as animation
@@ -9,6 +10,11 @@ import os
 import csv
 import time
 from datetime import datetime
+
+# Create the main window
+root = tk.Tk()
+sv_ttk.use_light_theme()
+root.title("Mass Flow Sensor Configuration")
 
 #os variable
 filename = os.environ.get("data_config_filename")
@@ -96,12 +102,30 @@ def save_to_csv():
         print("no login saved")
     now = datetime.now()
     formated_now = now.strftime("%Y%m%dT%H%M") # Date formated to follow ISO 8601
-    writer.writerow([user_id,formated_now],)  # Writing headers
-    writer.writerow(["Node", "Time", "Measurement", "Setpoint"])  # Writing headers
+    writer.writerow([user_id, formated_now])  # Writing headers
+
+    # Write headers for each node
+    headers = []
     for node in nodes:
-        for i in range(len(x_data[node])):
-            writer.writerow([node, x_data[node][i], y_data[node][i], setpoint_data[node][i]])
+        headers.extend([f"{node} Time", f"{node} Measurement", f"{node} Setpoint"])
+    writer.writerow(headers)
+
+    # Find the maximum length of the arrays
+    max_length = max(max(len(x_data[node]), len(y_data[node]), len(setpoint_data[node])) for node in nodes)
+
+    for i in range(max_length):
+        row_data = []
+        for node in nodes:
+            if i < len(x_data[node]):
+                row_data.append(x_data[node][i])
+            if i < len(y_data[node]):
+                row_data.append(y_data[node][i])
+            if i < len(setpoint_data[node]):
+                row_data.append(setpoint_data[node][i])
+        writer.writerow(row_data)
+
     file.close()
+
 
 def measurement_updates():
     if running:
@@ -260,9 +284,7 @@ ax2.tick_params(axis='y', labelcolor='tab:orange')
 ax1.legend(loc="upper left")
 ax2.legend(loc="upper right")
 
-# Create the main window
-root = tk.Tk()
-root.title("Mass Flow Sensor Configuration")
+
 
 
 # Create the measurement labels and setpoint sliders
@@ -295,3 +317,4 @@ root.after(1000, measurement_updates)
 
 # Start the Tkinter event loop
 root.mainloop()
+

@@ -1,7 +1,13 @@
 import csv
 import tkinter as tk
+import tkinter.ttk as ttk
 from tkinter import filedialog
+import sv_ttk
 import os
+
+root = tk.Tk()
+sv_ttk.use_light_theme()
+root.title("Mass Flow Sensor Configuration")
 
 def load_csv():
     global filename
@@ -21,14 +27,11 @@ def load_csv():
                 print("Invalid number of sensors in the CSV file.")
 
 def create_interface(num_sensors):
-    root = tk.Tk()
-    root.title("Mass Flow Sensor Configuration")
-
     # Create a list to hold the sensor-gas mappings
     mappings = []
     # Create labels and dropdowns for each sensor
     for i in range(num_sensors):
-        label = tk.Label(root, text=f"Sensor {i+1} with SN {data[3][i]}:")
+        label = ttk.Label(root, text=f"Sensor {i+1} with SN {data[3][i]}:")
         label.grid(row=i, column=0, padx=5, pady=5)
 
         # gas options
@@ -37,7 +40,7 @@ def create_interface(num_sensors):
             gas_options.append(f"gas {j+1}")
         var = tk.StringVar(root)
         var.set(gas_options[0])  # Set default value to the first gas option
-        dropdown = tk.OptionMenu(root, var, *gas_options)
+        dropdown = ttk.OptionMenu(root, var, *gas_options)
         dropdown.grid(row=i, column=1, padx=5, pady=5)
 
         mappings.append((data[2][i], var))  # Store the node-gas mapping
@@ -55,7 +58,7 @@ def create_interface(num_sensors):
         root.state(newstate='normal')
 
     # Save button
-    ok_button = tk.Button(root, text="OK", command=ok)
+    ok_button = ttk.Button(root, text="OK", command=ok)
     ok_button.grid(row=num_sensors, columnspan=2, padx=5, pady=10)
 
     root.mainloop()

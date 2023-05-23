@@ -1,4 +1,6 @@
 import tkinter as tk
+import tkinter.ttk as ttk
+import sv_ttk
 import os
 
 # Create a function to run the "manual.py" script
@@ -14,18 +16,19 @@ def run_script():
 
 # Create the main window
 root = tk.Tk()
+sv_ttk.use_light_theme()
 root.title("Script Launcher")
 
 # Create a frame for the buttons
-button_frame = tk.Frame(root)
+button_frame = ttk.Frame(root)
 button_frame.pack(padx=20, pady=20)
 
 # Create the "Manual" button and add it to the frame
-manual_button = tk.Button(button_frame, text="Manual", command=run_manual)
+manual_button = ttk.Button(button_frame, text="Manual", command=run_manual)
 manual_button.pack(side=tk.LEFT, padx=10)
 
 # Create the "Script" button and add it to the frame
-script_button = tk.Button(button_frame, text="Script", command=run_script)
+script_button = ttk.Button(button_frame, text="Script", command=run_script)
 script_button.pack(side=tk.LEFT, padx=10)
 
 # Start the main loop

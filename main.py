@@ -4,7 +4,9 @@ import tkinter.ttk as ttk
 import os
 from tkinter import messagebox
 from tkinter import filedialog
+import sv_ttk
 import csv
+
 
 def gen_csv(login,passwd):
     filename = filedialog.asksaveasfilename(defaultextension=".csv", filetypes=(("CSV Files", "*.csv"), ("All Files", "*.*")))
@@ -86,6 +88,7 @@ def center_window(window):
 
 if __name__ == '__main__':
     root = tk.Tk()
+    sv_ttk.use_light_theme()
     gui = CredentialGUI(root)
     center_window(root)
     root.resizable(False, False) 

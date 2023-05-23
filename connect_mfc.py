@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
 from tkinter import messagebox
-
+import sv_ttk
 import threading
 import comunicacion as com
 import os
@@ -11,11 +11,6 @@ import csv
 MFCs = {}
 elflow = com.Control_FlowBus('/dev/ttyUSB0')
 
-print(elflow.get_measurement("03"))
-print(elflow.get_setpoint("03"))
-print(elflow.get_serial("03"))
-print(elflow.get_capacity("03"))
-print(elflow.get_unit("03"))
 def find_MFCs(cancel_event):
     global MFCs
     total_nodes = 10
@@ -99,6 +94,7 @@ def ok():
     root.state(newstate='normal')
 
 root = tk.Tk()
+sv_ttk.use_light_theme()
 root.title("MFC Finder")
 
 frame = ttk.Frame(root, padding="20")
