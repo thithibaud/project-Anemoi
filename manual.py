@@ -9,7 +9,7 @@ import comunicacion as com
 import os
 import csv
 import time
-from datetime import datetime
+
 
 # Create the main window
 root = tk.Tk()
@@ -64,6 +64,7 @@ def start_measurement():
     save_button.config(state="disabled")
     start_time = time.time()
     measurement_updates()
+    
 
 def stop_measurement():
     global running
