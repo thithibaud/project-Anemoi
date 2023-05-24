@@ -8,11 +8,13 @@ import comunicacion as com
 import os
 import csv
 
-MFCs = {}
 elflow = com.Control_FlowBus('/dev/ttyUSB0')
+capacities = {}
+units = {}
+SNs = {}
 
 def find_MFCs(cancel_event):
-    global MFCs
+    global SNs
     total_nodes = 10
     for i in range(0, total_nodes):
         if cancel_event.is_set():
@@ -22,20 +24,23 @@ def find_MFCs(cancel_event):
         else:
             node = str(i)
         number = elflow.get_serial(node)
+        global capacity, unit
         capacity = elflow.get_capacity(node)
-        unit = elflow.get_unit(node)
+        unit= elflow.get_unit(node)
         if str(number) != "NA":
             print("node: " + node + "  SN: " + str(number)+ " capacity: " +str(capacity)+ unit)
-            if number in MFCs.values():
+            if number in SNs.values():
                 print("An instrument has duplicated nodes")
             else:
-                MFCs.update({node: number})
+                SNs.update({node: number})
+                capacities.update({node: capacity})
+                units.update({node: unit}) 
 
         loading_bar["value"] = (i+1) * (100 / total_nodes)
         loading_bar.update()
         root.update()
         display_results()
-    if (len(MFCs)==0):
+    if (len(SNs)==0):
         error_message = 'Error: MFC not found'
         tk.messagebox.showerror('Error', error_message)
     
@@ -55,10 +60,9 @@ def find_MFCs(cancel_event):
 def display_results():
     result_text.config(state="normal")
     result_text.delete("1.0", tk.END)
-    for node, number in MFCs.items():
-        capacity = elflow.get_capacity(node)
-        unit = elflow.get_unit(node)
-        result_text.insert(tk.END, "Node: " + node + "  SN: " + str(number) + " capacity: " + str(capacity)+ unit + "\n")
+    for node, number in SNs.items():
+        global capacity, unit
+        result_text.insert(tk.END, "Node: " + node + "  SN: " + str(number) + " Capacity: " + str(capacities[node])+ units[node] + "\n")
     result_text.config(state="disabled")
 
 def start_loading():
