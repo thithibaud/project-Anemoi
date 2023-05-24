@@ -13,7 +13,7 @@ def run_manual():
 # Create a function to run the "script.py" script
 def run_script():
     root.state(newstate='withdraw')
-    command = 'python3 script.py'
+    command = 'python3 script_generate.py'
     os.system(command)
     root.state(newstate='normal')
     

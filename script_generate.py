@@ -53,7 +53,7 @@ def create_interface(node, gas):
     capa_unit_label = ttk.Label(measurement_frame, text=f"Capacity: {capacity} {unit}")
     capa_unit_label.pack()
 
-def save_data(text_frame, text_field):
+def save_data(text_frame, text_field,run_button ):
     num_cycles = num_cycles_entry.get()
     start_purge_time = start_purge_entry.get()
     cycle_time = cycle_time_entry.get()
@@ -76,6 +76,23 @@ def save_data(text_frame, text_field):
     
     text_field.config(state="disabled")
     
+    #Write script in text file
+    script_filename = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=(("Text Files", "*.txt"), ("All Files", "*.*")))
+    script = open(script_filename,"w")
+    script.write(saved_info)
+    script.close()
+    
+    os.environ["script_filename"]=script_filename
+    
+    run_button.config(state="normal")
+    
+    
+def run_script():
+    root.state(newstate='withdraw')
+    command = 'python3 script_run.py'
+    os.system(command)
+    root.state(newstate='normal')    
+
 # Function to load CSV data and create measurement labels
 def load_csv_data(filename):
     with open(filename, 'r') as file:
@@ -154,9 +171,15 @@ def load_csv_data(filename):
     text_field.config(state="disabled")
     text_field.pack()
     
+    # run Button
+    run_button = ttk.Button(text_frame, text="Run", command=lambda: run_script())
+    run_button.config(state="disabled")
+    run_button.pack()
+        
     # Save Button
-    save_button = ttk.Button(config_frame, text="Save", command=lambda: save_data(text_frame, text_field))
+    save_button = ttk.Button(config_frame, text="Save", command=lambda: save_data(text_frame, text_field,run_button))
     save_button.grid(row=5, column=1)
+    
 
 # os variable
 filename = os.environ.get("data_config_filename")

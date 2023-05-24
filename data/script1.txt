@@ -1,0 +1,5 @@
+Number of Cycles : 3
+Start Purge Time (in s): 10
+Cycle Time (in s): 10
+Final Purge Time (in s): 10
+Behind Cycle Time (in s): 10
