@@ -27,7 +27,7 @@ text_field_frame.grid(row=2, column=0)
 
 # Create a frame for the buttons
 buttons_frame = ttk.Frame(root, padding=5)
-buttons_frame.grid(row=1, column=0)
+buttons_frame.grid(row=3, column=0)
 
 # Create an instance of Control_FlowBus
 mfc = com.Control_FlowBus('/dev/ttyUSB0')
@@ -208,24 +208,24 @@ def update_MFCs(current_operation):
                 setpoint = float(100)
                 mfc.send_setpoint(str(node), setpoint)
                 print(mfc.get_serial(node))
-                print(mfc.get_setpoint(node))
+                print(f"{gas} at node : {node} with setpoint:{mfc.get_setpoint(node)}")
             else:
                 setpoint = float(00)
                 mfc.send_setpoint(str(node), setpoint)
                 print(mfc.get_serial(node))
-                print(mfc.get_setpoint(node))
+                print(f"{gas} at node : {node} with setpoint:{mfc.get_setpoint(node)}")
     else:
         for gas,node in dict_nodes.items():
             if gas == f"gas {gas_number}":
                 setpoint = float(100)
                 mfc.send_setpoint(str(node), setpoint)
                 print(mfc.get_serial(node))
-                print(mfc.get_setpoint(node))
+                print(f"{gas} at node : {node} with setpoint:{mfc.get_setpoint(node)}")
             else:
                 setpoint = float(00)
                 mfc.send_setpoint(str(node), setpoint)
                 print(mfc.get_serial(node))
-                print(mfc.get_setpoint(node))
+                print(f"{gas} at node : {node} with setpoint:{mfc.get_setpoint(node)}")
         gas_number += 1
         if gas_number >= num_sensors:
             gas_number = 1

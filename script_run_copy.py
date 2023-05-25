@@ -230,7 +230,8 @@ def update_MFCs(current_operation):
 
 def update_MFCs_status():
     global MFCs_status, text_field
-    text_field.config(text=f"{MFCs_status}")  
+    text_field.config(text=f"{MFCs_status}")
+    root.update() 
 
 def on_close():
     if loading_bar_repeat is not None:
