@@ -9,7 +9,8 @@ import csv
 
 
 def gen_csv(login,passwd):
-    filename = filedialog.asksaveasfilename(defaultextension=".csv", filetypes=(("CSV Files", "*.csv"), ("All Files", "*.*")))
+    #filename = filedialog.asksaveasfilename(defaultextension=".csv", filetypes=(("CSV Files", "*.csv"), ("All Files", "*.*")))
+    filename = "data/MFC_data_config.csv"
     with open(filename, "w", newline="") as file:
         writer = csv.writer(file, dialect="excel")
         writer.writerow([login,passwd])

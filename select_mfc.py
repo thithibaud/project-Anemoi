@@ -8,6 +8,7 @@ import os
 root = tk.Tk()
 sv_ttk.use_light_theme()
 root.title("Mass Flow Sensor Configuration")
+root.geometry("+200+200")
 
 def load_csv():
     global filename

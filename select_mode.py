@@ -21,6 +21,7 @@ def run_script():
 root = tk.Tk()
 sv_ttk.use_light_theme()
 root.title("Script Launcher")
+root.geometry("+200+200")
 
 # Create a frame for the buttons
 button_frame = ttk.Frame(root)

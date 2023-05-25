@@ -12,6 +12,7 @@ from datetime import datetime
 root = tk.Tk()
 sv_ttk.use_light_theme()
 root.title("Mass Flow Sensor script Configuration")
+root.geometry("+200+200")
 
 # Create a frame for the measurement section
 measurement_frame = ttk.Frame(root, padding=5)
@@ -27,7 +28,7 @@ text_frame.grid(row=1, column=1)
 
 # Create a frame for the image and save button
 image_frame = ttk.Frame(root, padding=5)
-image_frame.grid(row=3, column=0)
+image_frame.grid(row=3, column=0, columnspan = 2)
 
 # Create an instance of Control_FlowBus
 mfc = com.Control_FlowBus('/dev/ttyUSB0')
@@ -138,17 +139,17 @@ def load_csv_data(filename):
 
     # Final Purge Time
     final_purge_label = ttk.Label(config_frame, text="Final Purge Time (in s):")
-    final_purge_label.grid(row=3, column=0)
+    final_purge_label.grid(row=4, column=0)
     global final_purge_entry
     final_purge_entry = ttk.Entry(config_frame)
-    final_purge_entry.grid(row=3, column=1)
+    final_purge_entry.grid(row=4, column=1)
 
     # Behind Cycle Time
     behind_cycle_label = ttk.Label(config_frame, text="Behind Cycle Time (in s):")
-    behind_cycle_label.grid(row=4, column=0)
+    behind_cycle_label.grid(row=3, column=0)
     global behind_cycle_entry
     behind_cycle_entry = ttk.Entry(config_frame)
-    behind_cycle_entry.grid(row=4, column=1)
+    behind_cycle_entry.grid(row=3, column=1)
     
     #Image title label
     image_title_label = ttk.Label(image_frame, text="Diagramme experiment:")

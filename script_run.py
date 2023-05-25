@@ -12,6 +12,7 @@ from datetime import datetime
 root = tk.Tk()
 sv_ttk.use_light_theme()
 root.title("Mass Flow Sensor script running")
+root.geometry("+200+200")
 
 # Create a frame for the measurement section
 measurement_frame = ttk.Frame(root, padding=5)

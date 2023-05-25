@@ -45,15 +45,15 @@ def find_MFCs(cancel_event):
         tk.messagebox.showerror('Error', error_message)
     
     filename = os.environ.get("data_config_filename")
-    if not os.path.exists(filename):
-        filename = filedialog.asksaveasfile(filetypes=[('CSV Files', '*.csv')])
+    if not ((filename is not None) and os.path.exists(filename)):
+        filename = filedialog.asksaveasfilename(defaultextension=".csv", filetypes=(('CSV Files', '*.csv'), ("All Files", "*.*")))
         
     with open(filename, "a",  newline="") as file:
         writer = csv.writer(file, dialect="excel")
         writer.writerow(["node then SN"])
-        writer.writerow(MFCs.keys())
-        writer.writerow(MFCs.values())
-        writer.writerow(["number of MFC connected",len(MFCs)])
+        writer.writerow(SNs.keys())
+        writer.writerow(SNs.values())
+        writer.writerow(["number of MFC connected",len(SNs)])
     finish()
     
 
@@ -100,6 +100,7 @@ def ok():
 root = tk.Tk()
 sv_ttk.use_light_theme()
 root.title("MFC Finder")
+root.geometry("+200+200")
 
 frame = ttk.Frame(root, padding="20")
 frame.grid()

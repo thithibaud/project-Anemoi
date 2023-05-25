@@ -15,7 +15,7 @@ import time
 root = tk.Tk()
 sv_ttk.use_light_theme()
 root.title("Mass Flow Sensor Configuration")
-
+root.geometry("+200+1")
 #os variable
 filename = os.environ.get("data_config_filename")
 if not ((filename is not None) and os.path.exists(filename)):

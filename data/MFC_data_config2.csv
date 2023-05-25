@@ -1,9 +1,4 @@
-admin,admin
 node then SN
-03,04,05
-M20209478,M9204338A,M14213302
-number of MFC connected,3
-Sensor node,Gas
-03,SA
-04,gas 1
-05,gas 2
+node then SN
+03,04
+M20209478,M9204338A
