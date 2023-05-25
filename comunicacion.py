@@ -15,7 +15,6 @@ import binascii
 import struct
 import serial
 import codecs
-import threading
 
 
 class Control_FlowBus(serial.Serial):
