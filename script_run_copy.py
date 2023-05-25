@@ -23,11 +23,11 @@ time_frame.grid(row=1, column=0)
 
 # Create a frame for the text field
 text_field_frame = ttk.Frame(root, padding=5)
-text_field_frame.grid(row=2, column=0)
+text_field_frame.grid(row=3, column=0)
 
 # Create a frame for the buttons
 buttons_frame = ttk.Frame(root, padding=5)
-buttons_frame.grid(row=1, column=0)
+buttons_frame.grid(row=2, column=0)
 
 # Create an instance of Control_FlowBus
 mfc = com.Control_FlowBus('/dev/ttyUSB0')
@@ -40,6 +40,7 @@ num_sensors = None
 cancel_flag = False
 script_index = 0
 gas_number = 1
+MFCs_status = ""
 
 # Adding this new variable outside any function
 loading_bar_repeat = None
@@ -141,8 +142,8 @@ def start_script():
         current_operation = array_script[0][script_index]
         current_time = array_script[1][script_index]
         start_time = time.time()
-        update_MFCs(current_operation)
         current_operation_label.config(text=f"Current Status: {current_operation}")
+        update_MFCs(current_operation)
         loading_bar_update(current_time, start_time)
         remaining_time = (len(array_script[0]) - script_index - 1) * current_time
         total_time_remaning_label.config(text=f"Total Time Remaining: {remaining_time} seconds")
@@ -200,36 +201,37 @@ def reset_script():
     total_time_remaning_label.config(text=f"Total Time Remaining: {sum(array_script[1])} seconds")
 
 def update_MFCs(current_operation):
-    global dict_nodes, gas_number, num_sensors
-    print(current_operation)
+    global dict_nodes, gas_number, num_sensors, MFCs_status
+    MFCs_status = f" {current_operation}"+"\n"
     if current_operation in ["Start Purge Time","Behind Cycle Time","Final Purge Time"]:
         for gas,node in dict_nodes.items():
             if gas == "SA":
                 setpoint = float(100)
                 mfc.send_setpoint(str(node), setpoint)
-                print(mfc.get_serial(node))
-                print(mfc.get_setpoint(node))
+                MFCs_status += f"{gas} at node : {node} with setpoint:{mfc.get_setpoint(node)}"+"\n"
             else:
-                setpoint = float(00)
+                setpoint = float(0)
                 mfc.send_setpoint(str(node), setpoint)
-                print(mfc.get_serial(node))
-                print(mfc.get_setpoint(node))
+                MFCs_status += f"{gas} at node : {node} with setpoint:{mfc.get_setpoint(node)}"+"\n"
     else:
         for gas,node in dict_nodes.items():
-            if gas == f"gas {gas_number}":
+            if gas == f" {gas_number}":
                 setpoint = float(100)
                 mfc.send_setpoint(str(node), setpoint)
-                print(mfc.get_serial(node))
-                print(mfc.get_setpoint(node))
+                MFCs_status += f"{gas} at node : {node} with setpoint:{mfc.get_setpoint(node)}"+"\n"
             else:
-                setpoint = float(00)
+                setpoint = float(0)
                 mfc.send_setpoint(str(node), setpoint)
-                print(mfc.get_serial(node))
-                print(mfc.get_setpoint(node))
+                MFCs_status += f"{gas} at node : {node} with setpoint:{mfc.get_setpoint(node)}"+"\n"
         gas_number += 1
         if gas_number >= num_sensors:
             gas_number = 1
-    
+        update_MFCs_status()
+
+def update_MFCs_status():
+    global MFCs_status, text_field
+    text_field.config(text=f"{MFCs_status}")  
+
 def on_close():
     if loading_bar_repeat is not None:
         root.after_cancel(loading_bar_repeat)  # Stop the loading bar update
@@ -267,6 +269,8 @@ total_operation_loading_bar.grid(row=3, column=0, columnspan=2, padx=10, pady=10
 next_operation_label = ttk.Label(time_frame,text="Next operation :")
 next_operation_label.grid(row=4, column=0, columnspan=2, padx=10, pady=10)
 
+text_field = ttk.Label(text_field_frame)
+text_field.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
 start_button = ttk.Button(buttons_frame, text="Start", command=start_script, state="normal")
 start_button.grid(row=0, column=1, padx=5, pady=5)

@@ -4,7 +4,7 @@ import comunicacion as com
 import time
 elflow= com.Control_FlowBus('/dev/ttyUSB0')
 while True:
-	print(elflow.get_mesure("03"))
+	print(elflow.get_measurement("03"))
 	print(elflow.get_setpoint("03"))
 	print(elflow.get_serial("03"))
 	print(elflow.get_capacity("03"))

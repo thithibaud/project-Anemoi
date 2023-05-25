@@ -1,7 +1,0 @@
-Bottle Concentration: 12
-Flow Concentration: 12
-Number of Cycles: 12
-Start Purge Time: 12
-Cycle Time: 12
-Final Purge Time: 1212
-Behind Cycle Time: 12
