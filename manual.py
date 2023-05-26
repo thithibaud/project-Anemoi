@@ -26,9 +26,7 @@ if filename:
         reader = csv.reader(file)
         data = list(reader)
         try:
-            num_sensors = int(
-                data[4][1]
-            )  # Assuming the number is stored in row 5, column 2
+            num_sensors = int(data[4][1])  # Assuming the number is stored in row 5, column 2
         except ValueError:
             print("Invalid number of sensors in the CSV file.")
 
@@ -122,10 +120,7 @@ def save_to_csv():
     writer.writerow(headers)
 
     # Find the maximum length of the arrays
-    max_length = max(
-        max(len(x_data[node]), len(y_data[node]), len(setpoint_data[node]))
-        for node in nodes
-    )
+    max_length = max(max(len(x_data[node]), len(y_data[node]), len(setpoint_data[node])) for node in nodes)
 
     for i in range(max_length):
         row_data = []
@@ -165,12 +160,8 @@ def update_measurement(node):
         setpoint_slider[node].set(setpoint_float)
 
         # Update the setpoint labels
-        current_setpoint_label[node].config(
-            text=f"Current Setpoint: {setpoint_float:.2f}"
-        )
-        desired_setpoint_label[node].config(
-            text=f"Desired Setpoint: {setpoint_slider[node].get():.2f}"
-        )
+        current_setpoint_label[node].config(text=f"Current Setpoint: {setpoint_float:.2f}")
+        desired_setpoint_label[node].config(text=f"Desired Setpoint: {setpoint_slider[node].get():.2f}")
 
         # Update time
         current_time = time.time() - start_time
@@ -217,9 +208,7 @@ def set_setpoint_button(node, setpoint):
     except ValueError:
         print("Invalid setpoint value.")
     else:
-        setpoint_input_entry[node].delete(
-            0, tk.END
-        )  # Clear the entry field if the setpoint was valid
+        setpoint_input_entry[node].delete(0, tk.END)  # Clear the entry field if the setpoint was valid
 
 
 def create_interface(node):
@@ -281,14 +270,10 @@ def create_interface(node):
     setpoint_input_button.pack(side=tk.LEFT)
 
     # Create labels for the current and desired setpoints
-    current_setpoint_label[node] = ttk.Label(
-        setpoint_labels_frame, text="Current Setpoint: "
-    )
+    current_setpoint_label[node] = ttk.Label(setpoint_labels_frame, text="Current Setpoint: ")
     current_setpoint_label[node].pack()
 
-    desired_setpoint_label[node] = ttk.Label(
-        setpoint_labels_frame, text="Desired Setpoint: "
-    )
+    desired_setpoint_label[node] = ttk.Label(setpoint_labels_frame, text="Desired Setpoint: ")
     desired_setpoint_label[node].pack()
 
 
@@ -336,24 +321,16 @@ button_frame = ttk.Frame(root)
 button_frame.pack(side=tk.BOTTOM)
 
 # Create the start, stop,reset buttons and save button
-start_button = ttk.Button(
-    button_frame, text="Start", command=start_measurement, state="normal"
-)
+start_button = ttk.Button(button_frame, text="Start", command=start_measurement, state="normal")
 start_button.pack(side=tk.LEFT)
 
-stop_button = ttk.Button(
-    button_frame, text="Stop", command=stop_measurement, state="disabled"
-)
+stop_button = ttk.Button(button_frame, text="Stop", command=stop_measurement, state="disabled")
 stop_button.pack(side=tk.LEFT)
 
-reset_button = ttk.Button(
-    button_frame, text="Reset", command=reset_measurement, state="disabled"
-)
+reset_button = ttk.Button(button_frame, text="Reset", command=reset_measurement, state="disabled")
 reset_button.pack(side=tk.LEFT)
 
-save_button = ttk.Button(
-    button_frame, text="Save as CSV", command=save_to_csv, state="disabled"
-)
+save_button = ttk.Button(button_frame, text="Save as CSV", command=save_to_csv, state="disabled")
 save_button.pack(side=tk.LEFT)
 
 # Schedule the start of the measurement update loop
