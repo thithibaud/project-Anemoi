@@ -86,6 +86,8 @@ def load_csv_data(filename):
     # Create the measurement labels
     for gas, node in dict_nodes.items():
         create_interface(node, gas)
+    
+    return nodes
 
 
 def load_script_data(script_filename):
@@ -311,7 +313,7 @@ def update_temperature(temperature):
         dps.setCurrent(0)
         dps.setOutput(False)
 
-def save_to_csv():
+def save_to_csv(nodes):
     # Open save file dialog
     file = filedialog.asksaveasfile(
         parent=root,
@@ -358,8 +360,9 @@ filename = os.environ.get("data_config_filename")
 if not ((filename is not None) and os.path.exists(filename)):
     filename = filedialog.askopenfilename(filetypes=[("CSV Files", "*.csv")])
 
+nodes = []
 if filename:
-    load_csv_data(filename)
+    nodes = load_csv_data(filename)
 # os variable
 script_filename = os.environ.get("script_filename")
 if not ((script_filename is not None) and os.path.exists(script_filename)):
@@ -405,7 +408,7 @@ retry_button = ttk.Button(
 retry_button.grid(row=0, column=3, padx=5, pady=5)
 
 save_button = ttk.Button(
-    buttons_frame, text="Save to CSV", command=lambda: save_to_csv(), state="disabled"
+    buttons_frame, text="Save to CSV", command=lambda: save_to_csv(nodes), state="disabled"
 )
 save_button.grid(row=0, column=4, padx=5, pady=5)
 
