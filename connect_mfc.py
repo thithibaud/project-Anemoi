@@ -89,7 +89,7 @@ def cancel_loading():
     retry_button.config(state="normal")
     ok_button.config(state="normal")
     loading_bar["value"] = 0
-    MFCs.clear()
+    SNs.clear()
     result_text.config(state="normal")
     result_text.delete("1.0", tk.END)
 

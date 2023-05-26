@@ -1,3 +1,4 @@
+from datetime import datetime
 import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
@@ -84,8 +85,8 @@ def reset_measurement():
     for node in nodes:
         line[node].set_data([], [])
         setpoint_line[node].set_data([], [])
-    ax.relim()  # Recalculate limits
-    ax.autoscale_view(True, True, True)  # Autoscale the view
+    ax1.relim()  # Recalculate limits
+    ax1.autoscale_view(True, True, True)  # Autoscale the view
     canvas.draw()
     start_button.config(state="normal")
     stop_button.config(state="disabled")
