@@ -21,7 +21,7 @@ def find_MFCs(cancel_event):
         if cancel_event.is_set():
             break
         elif i <= 9:
-            node = "0" + str(i)
+            node = f"0{str(i)}"
         else:
             node = str(i)
         number = elflow.get_serial(node)
@@ -29,7 +29,7 @@ def find_MFCs(cancel_event):
         capacity = elflow.get_capacity(node)
         unit = elflow.get_unit(node)
         if str(number) != "NA":
-            print("node: " + node + "  SN: " + str(number) + " capacity: " + str(capacity) + unit)
+            print(f"node: {node}  SN: {str(number)} capacity: {str(capacity)}{unit}")
             if number in SNs.values():
                 print("An instrument has duplicated nodes")
             else:
@@ -68,7 +68,7 @@ def display_results():
         global capacity, unit
         result_text.insert(
             tk.END,
-            "Node: " + node + "  SN: " + str(number) + " Capacity: " + str(capacities[node]) + units[node] + "\n",
+            f"Node: {node}  SN: {str(number)} Capacity: {str(capacities[node])}{units[node]}" + "\n",
         )
     result_text.config(state="disabled")
 

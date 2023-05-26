@@ -34,7 +34,7 @@ class Control_FlowBus(serial.Serial):
         Realizará una petición de la medida de flujo al MassFlow
         ******************************************************"""
         try:
-            med = ":06" + nodo + "0401210120\r\n"
+            med = f":06{nodo}" + "0401210120\r\n"
             self.write(med.encode())
             medida = self.readline()
         except ValueError:
@@ -60,20 +60,17 @@ class Control_FlowBus(serial.Serial):
             sp = str(sp)
             sp = sp.upper()
 
-        tsp = ":06" + nodo + "010121" + sp + "\r\n"
+        tsp = f":06{nodo}010121{sp}" + "\r\n"
         self.write(tsp.encode())  # envío setpoint
         ans = self.readline()  # respuesta de confirmación
-        if ans[6:11] == b"00005":
-            return ans[6:11]
-        else:
-            return "NA"
+        return ans[6:11] if ans[6:11] == b"00005" else "NA"
 
     def get_setpoint(self, nodo):
         """***********************************
         Se solocita el setpoint actual del MFC
         ***********************************"""
         try:
-            setp = ":06" + nodo + "0401210121\r\n"
+            setp = f":06{nodo}" + "0401210121\r\n"
             self.write(setp.encode())
             ans = self.readline()
             answ = ans[11:15]
@@ -92,13 +89,13 @@ class Control_FlowBus(serial.Serial):
         *********************************************************************************
         """
         try:
-            pnser = ":07" + nodo + "047163716300\r\n"  # se crea trama para pedir número de serie
+            pnser = f":07{nodo}" + "047163716300\r\n"
             self.write(pnser.encode())
             numser = self.readline()
             numser = numser[13:31]  # se guarda el dato interesado
             numser = binascii.unhexlify(numser)  # se convierte a código Ascii
             numser = str(numser, "ascii")
-            if numser == "":
+            if not numser:
                 raise ValueError
 
         except ValueError:
@@ -112,7 +109,7 @@ class Control_FlowBus(serial.Serial):
         ***************************************************************************"""
 
         try:
-            pcap = ":06" + nodo + "04014D014D\r\n"
+            pcap = f":06{nodo}" + "04014D014D\r\n"
             self.write(pcap.encode())
             cap = self.readline()
             cap = cap[11:19]
@@ -128,7 +125,7 @@ class Control_FlowBus(serial.Serial):
         Se pide las unidades de la capacidad a cada Massflow conectado
         ***************************************************************************"""
         try:
-            pcap = ":07" + nodo + "04017F017F07\r\n"  # se crea trama para pedir capacidad (4D014D)
+            pcap = f":07{nodo}" + "04017F017F07\r\n"
             self.write(pcap.encode())
             cap = self.readline()
             cap = cap[13:27]
