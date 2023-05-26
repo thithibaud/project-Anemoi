@@ -47,6 +47,13 @@ cancel_flag = False
 script_index = 0
 gas_number = 1
 temperature =""
+x_data = {}
+y_data = {}
+setpoint_data = {}
+measurement = {}
+setpoint = {}
+start_time = float(0)
+
 # Adding this new variable outside any function
 loading_bar_repeat = None
 
@@ -140,7 +147,7 @@ def create_interface(node, gas):
 
 
 def start_script():
-    global current_operation_label, array_script, script_index, cancel_flag, start_button, cancel_button, retry_button
+    global current_operation_label, array_script, script_index, cancel_flag, start_button, cancel_button, retry_button,start_time
     cancel_button.config(state="normal")
     retry_button.config(state="disabled")
     start_button.config(state="disabled")
@@ -173,7 +180,8 @@ def start_script():
             root.after_cancel(loading_bar_repeat)
         cancel_flag = False
         cancel_button.config(state="disabled")
-        retry_button.config(state="normal")  # Enable the retry button after operation
+        retry_button.config(state="normal")
+        save_button.config(state="normal") # Enable the retry and save button after operation
         # Set the current operation loading bar to 100 if the script is completed
         if script_index == len(array_script[0]):
             current_operation_loading_bar.config(value=100)
@@ -224,6 +232,10 @@ def reset_script():
     total_time_remaning_label.config(
         text=f"Total Time Remaining: {sum(array_script[1])} seconds"
     )
+    global x_data, y_data, setpoint_data
+    x_data = {}
+    y_data = {}
+    setpoint_data = {}
 
 
 def update_MFCs(current_operation):
@@ -266,11 +278,24 @@ def on_close():
 root.protocol("WM_DELETE_WINDOW", on_close)
 
 # Function to update the current setpoint label
-def update_current_setpoint():
+def update_current_measurments():
+    global start_time
     for gas, node in dict_nodes.items():
-        setpoint = mfc.get_setpoint(str(node))
-        measurement_label[node].config(text=f"MFC for {gas} (Setpoint: {setpoint})")
-    root.after(1000, update_current_setpoint)  # Update every 1 second
+        setpoint[node] = mfc.get_setpoint(str(node))
+        measurement[node] = mfc.get_measurement(str(node))
+        measurement_label[node].config(text=f"MFC for {gas}, Setpoint: {setpoint[node]},  Measurement :{measurement[node]}")
+        # Update time
+        current_time = time.time() - start_time
+        current_time = round(current_time)
+        
+        if node not in x_data:
+            x_data[node] = []
+            y_data[node] = []
+            setpoint_data[node] = []
+        x_data[node].append(current_time)
+        y_data[node].append(measurement[node])
+        setpoint_data[node].append(setpoint[node])
+    root.after(1000, update_current_measurments)# Update every 1 second
 
 def update_temperature(temperature):
     # Function to update the temperature
@@ -286,6 +311,47 @@ def update_temperature(temperature):
         dps.setCurrent(0)
         dps.setOutput(False)
 
+def save_to_csv():
+    # Open save file dialog
+    file = filedialog.asksaveasfile(
+        parent=root,
+        mode="w",
+        defaultextension=".csv",
+        filetypes=(("CSV Files", "*.csv"), ("All Files", "*.*")),
+    )
+    if file is None:  # If no file chosen, return
+        return
+    writer = csv.writer(file, dialect="excel")
+    user_id = "login"
+    try:
+        user_id = os.environ["user_id"]
+    except:
+        print("no login saved")
+    now = datetime.now()
+    formated_now = now.strftime("%Y%m%dT%H%M")  # Date formated to follow ISO 8601
+    writer.writerow([user_id, formated_now])  # Writing headers
+
+    # Write headers for each node
+    headers = []
+    for node in nodes:
+        headers.extend([f"{node} Time", f"{node} Measurement", f"{node} Setpoint"])
+    writer.writerow(headers)
+
+    # Find the maximum length of the arrays
+    max_length = max(max(len(x_data[node]), len(y_data[node]), len(setpoint_data[node])) for node in nodes)
+
+    for i in range(max_length):
+        row_data = []
+        for node in nodes:
+            if i < len(x_data[node]):
+                row_data.append(x_data[node][i])
+            if i < len(y_data[node]):
+                row_data.append(y_data[node][i])
+            if i < len(setpoint_data[node]):
+                row_data.append(setpoint_data[node][i])
+        writer.writerow(row_data)
+
+    file.close()
 
 # os variable
 filename = os.environ.get("data_config_filename")
@@ -338,10 +404,12 @@ retry_button = ttk.Button(
 )
 retry_button.grid(row=0, column=3, padx=5, pady=5)
 
+save_button = ttk.Button(
+    buttons_frame, text="Save to CSV", command=lambda: save_to_csv(), state="disabled"
+)
+save_button.grid(row=0, column=4, padx=5, pady=5)
 
-
-
-update_current_setpoint()
+update_current_measurments()
 
 # Start the Tkinter event loop
 root.mainloop()
