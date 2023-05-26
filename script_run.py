@@ -137,7 +137,7 @@ def load_script_data(script_filename):
 def create_interface(node, gas):
     # Create a label to display the measurement
     measurement_label[node] = ttk.Label(measurement_frame, text=f"MFC for {gas} ")
-    measurement_label[node].pack()
+    measurement_label[node].pack(padx=10, pady=10)
 
     # Get the capacity and unit
     capacity = mfc.get_capacity(str(node))
@@ -145,7 +145,7 @@ def create_interface(node, gas):
 
     # Create a label to display the capacity and unit
     capa_unit_label = ttk.Label(measurement_frame, text=f"Capacity: {capacity} {unit}")
-    capa_unit_label.pack()
+    capa_unit_label.pack(padx=10, pady=10)
 
 
 def start_script():
