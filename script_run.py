@@ -7,12 +7,20 @@ import os
 import csv
 import time
 from datetime import datetime
+import pydps
+import math
 
 # Create the main window
 root = tk.Tk()
 sv_ttk.use_light_theme()
 root.title("Mass Flow Sensor script running")
 root.geometry("+200+200")
+
+# dps Test Example
+dps = pydps.dps_psu("/dev/ttyUSB1", 1)  # port name, slave address (in decimal)
+
+# Create an instance of Control_FlowBus
+mfc = com.Control_FlowBus("/dev/ttyUSB0")
 
 # Create a frame for the measurement section
 measurement_frame = ttk.Frame(root, padding=5)
@@ -30,9 +38,6 @@ text_field_frame.grid(row=2, column=0)
 buttons_frame = ttk.Frame(root, padding=5)
 buttons_frame.grid(row=3, column=0)
 
-# Create an instance of Control_FlowBus
-mfc = com.Control_FlowBus("/dev/ttyUSB0")
-
 # Variables to hold widget references
 measurement_label = {}
 dict_nodes = {}
@@ -41,7 +46,7 @@ num_sensors = None
 cancel_flag = False
 script_index = 0
 gas_number = 1
-
+temperature =""
 # Adding this new variable outside any function
 loading_bar_repeat = None
 
@@ -57,7 +62,9 @@ def load_csv_data(filename):
         reader = csv.reader(file)
         data = list(reader)
         try:
-            num_sensors = int(data[4][1])  # Assuming the number is stored in row 5, column 2
+            num_sensors = int(
+                data[4][1]
+            )  # Assuming the number is stored in row 5, column 2
         except ValueError:
             print("Invalid number of sensors in the CSV file.")
 
@@ -78,7 +85,7 @@ def load_script_data(script_filename):
     script = open(script_filename, "r")
     data = script.read()
     script.close()
-
+    global temperature
     # Extracting values from the script
     lines = data.split("\n")
     values = {}
@@ -91,8 +98,10 @@ def load_script_data(script_filename):
     num_cycles = values["Number of Cycles"]
     start_purge_time = values["Start Purge Time (in s)"]
     cycle_time = values["Cycle Time (in s)"]
-    final_purge_time = values["Final Purge Time (in s)"]
     behind_cycle_time = values["Behind Cycle Time (in s)"]
+    final_purge_time = values["Final Purge Time (in s)"]
+    temperature = values["Temperature (in celcius)"]
+    
 
     global array_script, num_sensors
 
@@ -113,6 +122,7 @@ def load_script_data(script_filename):
     array_script.append(list_times)
     print(array_script)
     print(dict_nodes)
+    print(f"Temperature (in celcius):{temperature}")
 
 
 def create_interface(node, gas):
@@ -142,8 +152,12 @@ def start_script():
         current_operation_label.config(text=f"Current Status: {current_operation}")
         loading_bar_update(current_time, start_time)
         remaining_time = (len(array_script[0]) - script_index - 1) * current_time
-        total_time_remaning_label.config(text=f"Total Time Remaining: {remaining_time} seconds")
-        total_operation_loading_bar.config(value=(script_index + 1) * 100 / len(array_script[0]))
+        total_time_remaning_label.config(
+            text=f"Total Time Remaining: {remaining_time} seconds"
+        )
+        total_operation_loading_bar.config(
+            value=(script_index + 1) * 100 / len(array_script[0])
+        )
         if root:
             script_index += 1
             root.after(current_time * 1000, start_script)
@@ -158,7 +172,6 @@ def start_script():
         if loading_bar_repeat is not None and root:
             root.after_cancel(loading_bar_repeat)
         cancel_flag = False
-        start_button.config(state="normal")
         cancel_button.config(state="disabled")
         retry_button.config(state="normal")  # Enable the retry button after operation
         # Set the current operation loading bar to 100 if the script is completed
@@ -172,12 +185,18 @@ def loading_bar_update(time_current_operation, start_time):
     if loading_bar_repeat is not None:
         root.after_cancel(loading_bar_repeat)
     current_time = time.time() - start_time
-    current_operation_loading_bar.config(value=current_time * 100 / time_current_operation)
+    current_operation_loading_bar.config(
+        value=current_time * 100 / time_current_operation
+    )
     # Check if the script has been cancelled or completed before scheduling the next update
     if not cancel_flag and script_index < len(array_script[0]):
-        loading_bar_repeat = root.after(1000, lambda: loading_bar_update(time_current_operation, start_time))
+        loading_bar_repeat = root.after(
+            1000, lambda: loading_bar_update(time_current_operation, start_time)
+        )
     else:
-        loading_bar_repeat = None  # Reset the reference after the task has been cancelled or completed
+        loading_bar_repeat = (
+            None  # Reset the reference after the task has been cancelled or completed
+        )
 
 
 def cancel_script():
@@ -187,7 +206,9 @@ def cancel_script():
     start_button.config(state="normal")  # Enable the start button
     cancel_button.config(state="disabled")  # Disable the cancel button
     retry_button.config(state="normal")  # Enable the retry button
-    current_operation_label.config(text=f"Current Status: Cancelled")  # Update the status label
+    current_operation_label.config(
+        text=f"Current Status: Cancelled"
+    )  # Update the status label
 
 
 def reset_script():
@@ -200,11 +221,13 @@ def reset_script():
     current_operation_loading_bar.config(value=0)
     current_operation_label.config(text=f"Current Status: Ready")
     next_operation_label.config(text=f"Next Operation: {array_script[0][0]}")
-    total_time_remaning_label.config(text=f"Total Time Remaining: {sum(array_script[1])} seconds")
+    total_time_remaning_label.config(
+        text=f"Total Time Remaining: {sum(array_script[1])} seconds"
+    )
 
 
 def update_MFCs(current_operation):
-    global dict_nodes, gas_number, num_sensors
+    global dict_nodes, gas_number, num_sensors, temperature
     print(current_operation)
     if current_operation in [
         "Start Purge Time",
@@ -220,6 +243,7 @@ def update_MFCs(current_operation):
                 setpoint = float(00)
                 mfc.send_setpoint(str(node), setpoint)
                 print(f"{gas} at node: {node} with setpoint: {mfc.get_setpoint(node)}")
+        update_temperature(25)            
     else:
         for gas, node in dict_nodes.items():
             if gas == f"gas {gas_number}":
@@ -233,15 +257,35 @@ def update_MFCs(current_operation):
         gas_number += 1
         if gas_number >= num_sensors:
             gas_number = 1
-
+        update_temperature(temperature)         
 
 def on_close():
     if loading_bar_repeat is not None:
         root.after_cancel(loading_bar_repeat)  # Stop the loading bar update
     root.destroy()
-
-
 root.protocol("WM_DELETE_WINDOW", on_close)
+
+# Function to update the current setpoint label
+def update_current_setpoint():
+    for gas, node in dict_nodes.items():
+        setpoint = mfc.get_setpoint(str(node))
+        measurement_label[node].config(text=f"MFC for {gas} (Setpoint: {setpoint})")
+    root.after(1000, update_current_setpoint)  # Update every 1 second
+
+def update_temperature(temperature):
+    # Function to update the temperature
+    print(f"Updating temperature to {temperature} degrees Celsius")
+    if temperature>=30:
+        current = 0.1303 * math.log(temperature) - 0.4116
+        print(f"Current : {current}")
+        dps.setVoltage(5)
+        dps.setCurrent(current)
+        dps.setOutput(True)
+    else:
+        dps.setVoltage(0)
+        dps.setCurrent(0)
+        dps.setOutput(False)
+
 
 # os variable
 filename = os.environ.get("data_config_filename")
@@ -262,35 +306,39 @@ if script_filename:
 current_operation_label = ttk.Label(time_frame, text="Current status:")
 current_operation_label.grid(row=0, column=0, columnspan=2, padx=10, pady=10)
 
-current_operation_loading_bar = ttk.Progressbar(time_frame, length=400, mode="determinate")
+current_operation_loading_bar = ttk.Progressbar(
+    time_frame, length=400, mode="determinate"
+)
 current_operation_loading_bar.grid(row=1, column=0, columnspan=2, padx=10, pady=10)
 
 total_time_remaning_label = ttk.Label(time_frame, text="Total time remaining:")
 total_time_remaning_label.grid(row=2, column=0, columnspan=2, padx=10, pady=10)
 
-total_operation_loading_bar = ttk.Progressbar(time_frame, length=400, mode="determinate")
+total_operation_loading_bar = ttk.Progressbar(
+    time_frame, length=400, mode="determinate"
+)
 total_operation_loading_bar.grid(row=3, column=0, columnspan=2, padx=10, pady=10)
 
 next_operation_label = ttk.Label(time_frame, text="Next operation:")
 next_operation_label.grid(row=4, column=0, columnspan=2, padx=10, pady=10)
 
 
-start_button = ttk.Button(buttons_frame, text="Start", command=start_script, state="normal")
+start_button = ttk.Button(
+    buttons_frame, text="Start", command=start_script, state="normal"
+)
 start_button.grid(row=0, column=1, padx=5, pady=5)
 
-cancel_button = ttk.Button(buttons_frame, text="Cancel", command=cancel_script, state="disabled")
+cancel_button = ttk.Button(
+    buttons_frame, text="Cancel", command=cancel_script, state="disabled"
+)
 cancel_button.grid(row=0, column=2, padx=5, pady=5)
 
-retry_button = ttk.Button(buttons_frame, text="Retry", command=lambda: reset_script(), state="disabled")
+retry_button = ttk.Button(
+    buttons_frame, text="Retry", command=lambda: reset_script(), state="disabled"
+)
 retry_button.grid(row=0, column=3, padx=5, pady=5)
 
 
-# Function to update the current setpoint label
-def update_current_setpoint():
-    for gas, node in dict_nodes.items():
-        setpoint = mfc.get_setpoint(str(node))
-        measurement_label[node].config(text=f"MFC for {gas} (Setpoint: {setpoint})")
-    root.after(1000, update_current_setpoint)  # Update every 1 second
 
 
 update_current_setpoint()

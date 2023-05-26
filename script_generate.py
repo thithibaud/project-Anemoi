@@ -40,6 +40,7 @@ start_purge_entry = None
 cycle_time_entry = None
 final_purge_entry = None
 behind_cycle_entry = None
+temperature_entry = None
 
 
 def create_interface(node, gas):
@@ -62,12 +63,14 @@ def save_data(text_frame, text_field, run_button):
     cycle_time = cycle_time_entry.get()
     final_purge_time = final_purge_entry.get()
     behind_cycle_time = behind_cycle_entry.get()
+    temperature = temperature_entry.get()
 
     saved_info = f"Number of Cycles : {num_cycles}\n"
     saved_info += f"Start Purge Time (in s): {start_purge_time}\n"
     saved_info += f"Cycle Time (in s): {cycle_time}\n"
     saved_info += f"Final Purge Time (in s): {final_purge_time}\n"
     saved_info += f"Behind Cycle Time (in s): {behind_cycle_time}\n"
+    saved_info += f"Temperature (in celcius): {temperature}\n"
 
     # Write script in text file
     script_filename = filedialog.asksaveasfilename(
@@ -181,6 +184,13 @@ def load_csv_data(filename):
     behind_cycle_entry = ttk.Entry(config_frame)
     behind_cycle_entry.grid(row=3, column=1)
 
+    # Temperature
+    temperature_label = ttk.Label(config_frame, text="Temperature (in celcius):")
+    temperature_label.grid(row=5, column=0)
+    global temperature_entry
+    temperature_entry = ttk.Entry(config_frame)
+    temperature_entry.grid(row=5, column=1)
+
     # Image title label
     image_title_label = ttk.Label(image_frame, text="Diagramme experiment:")
     image_title_label.pack()
@@ -215,7 +225,7 @@ def load_csv_data(filename):
         text="Save",
         command=lambda: save_data(text_frame, text_field, run_button),
     )
-    save_button.grid(row=5, column=1)
+    save_button.grid(row=6, column=1)
 
     # Run Button
     run_button = ttk.Button(text_frame, text="Run", command=lambda: run_script())
