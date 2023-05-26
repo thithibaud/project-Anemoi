@@ -138,7 +138,7 @@ def load_csv_data(filename):
     image_title_label.pack()
     
     # Create the image label
-    if (num_sensors >= 2):
+    if (num_sensors >= 3):
         image = tk.PhotoImage(file='image/diag2.png')
     else:
         image = tk.PhotoImage(file='image/diag.png')
