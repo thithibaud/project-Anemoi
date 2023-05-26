@@ -63,21 +63,11 @@ def save_data(text_frame, text_field, run_button):
     final_purge_time = final_purge_entry.get()
     behind_cycle_time = behind_cycle_entry.get()
 
-    text_field.config(state="normal")
-
-    # Clear the existing content of the text field
-    text_field.delete("1.0", tk.END)
-
-    # Display the saved information in the text field
     saved_info = f"Number of Cycles : {num_cycles}\n"
     saved_info += f"Start Purge Time (in s): {start_purge_time}\n"
     saved_info += f"Cycle Time (in s): {cycle_time}\n"
     saved_info += f"Final Purge Time (in s): {final_purge_time}\n"
     saved_info += f"Behind Cycle Time (in s): {behind_cycle_time}\n"
-
-    text_field.insert(tk.END, saved_info)
-
-    text_field.config(state="disabled")
 
     # Write script in text file
     script_filename = filedialog.asksaveasfilename(
@@ -90,6 +80,16 @@ def save_data(text_frame, text_field, run_button):
 
     os.environ["script_filename"] = script_filename
 
+    text_field.config(state="normal")
+
+    # Clear the existing content of the text field
+    text_field.delete("1.0", tk.END)
+
+    # Display the saved information in the text field
+    text_field.insert(tk.END, saved_info)
+
+    text_field.config(state="disabled")
+
     run_button.config(state="normal")
 
 
@@ -98,6 +98,30 @@ def run_script():
     command = "python3 script_run.py"
     os.system(command)
     root.state(newstate="normal")
+
+
+def load_script(text_field, run_button):
+    script_filename = filedialog.askopenfilename(
+        defaultextension=".txt", filetypes=(("Text Files", "*.txt"), ("All Files", "*.*"))
+    )
+    if script_filename:
+        os.environ["script_filename"] = script_filename
+
+        text_field.config(state="normal")
+
+        # Clear the existing content of the text field
+        text_field.delete("1.0", tk.END)
+
+        # Read the script content from the file
+        with open(script_filename, "r") as file:
+            script_content = file.read()
+
+        # Display the script content in the text field
+        text_field.insert(tk.END, script_content)
+
+        text_field.config(state="disabled")
+
+        run_button.config(state="normal")
 
 
 # Function to load CSV data and create measurement labels
@@ -162,7 +186,7 @@ def load_csv_data(filename):
     image_title_label.pack()
 
     # Create the image label
-    if num_sensors >= 2:
+    if num_sensors >= 3:
         image = tk.PhotoImage(file="image/diag2.png")
     else:
         image = tk.PhotoImage(file="image/diag.png")
@@ -171,16 +195,19 @@ def load_csv_data(filename):
     image_label.pack()
 
     # Text field
-    text_label = ttk.Label(text_frame, text="saved info:")
+    text_label = ttk.Label(text_frame, text="Saved info:")
     text_label.pack()
     text_field = tk.Text(text_frame, height=10, width=40)
     text_field.config(state="disabled")
     text_field.pack()
 
-    # run Button
-    run_button = ttk.Button(text_frame, text="Run", command=lambda: run_script())
-    run_button.config(state="disabled")
-    run_button.pack()
+    # Load Button
+    load_button = ttk.Button(
+        text_frame,
+        text="Load",
+        command=lambda: load_script(text_field, run_button),
+    )
+    load_button.pack(side=tk.LEFT)
 
     # Save Button
     save_button = ttk.Button(
@@ -189,6 +216,11 @@ def load_csv_data(filename):
         command=lambda: save_data(text_frame, text_field, run_button),
     )
     save_button.grid(row=5, column=1)
+
+    # Run Button
+    run_button = ttk.Button(text_frame, text="Run", command=lambda: run_script())
+    run_button.config(state="disabled")
+    run_button.pack(side=tk.LEFT)
 
 
 # os variable

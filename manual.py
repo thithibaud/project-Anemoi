@@ -215,19 +215,20 @@ def create_interface(node):
     # Create a frame for the measurement section
     measurement_frame = ttk.Frame(root, padding=5)
     measurement_frame.pack()
-
-    # Create a label to display the measurement
-    measurement_label[node] = ttk.Label(measurement_frame, text="Measurement: ")
-    measurement_label[node].pack()
-
-    # Get the capacity and unit
+    
+    # Get the capacity, unit and SN
     capacity = mfc.get_capacity(str(node))
     unit = mfc.get_unit(str(node))
+    SN = mfc.get_serial(str(node))
 
-    # Create a label to display the capacity and unit
-    capa_unit_label = ttk.Label(measurement_frame, text=f"Capacity: {capacity} {unit}")
-    capa_unit_label.pack()
-
+    # Create a label to display the SN and node
+    SN_node_label = ttk.Label(measurement_frame, text=f"MFC with SN: {SN} and node {node}")
+    SN_node_label.pack()
+    
+    # Create labels for the desired setpoints
+    desired_setpoint_label[node] = ttk.Label(measurement_frame, text="Desired Setpoint: ")
+    desired_setpoint_label[node].pack()
+    
     # Create a frame for the setpoint section
     setpoint_frame = ttk.Frame(root, padding=5)
     setpoint_frame.pack()
@@ -269,13 +270,15 @@ def create_interface(node):
     )
     setpoint_input_button.pack(side=tk.LEFT)
 
-    # Create labels for the current and desired setpoints
+    # Create labels for the current setpoints
     current_setpoint_label[node] = ttk.Label(setpoint_labels_frame, text="Current Setpoint: ")
     current_setpoint_label[node].pack()
 
-    desired_setpoint_label[node] = ttk.Label(setpoint_labels_frame, text="Desired Setpoint: ")
-    desired_setpoint_label[node].pack()
-
+    
+    # Create a label to display the measurement
+    measurement_label[node] = ttk.Label(setpoint_labels_frame, text="Measurement: ")
+    measurement_label[node].pack()
+    
 
 ##    # Add the graph lines to the legend
 ##    ax.legend()
