@@ -23,9 +23,7 @@ def load_csv():
             global data
             data = list(reader)
             try:
-                num_sensors = int(
-                    data[4][1]
-                )  # Assuming the number is stored in row 5, column 2
+                num_sensors = int(data[4][1])  # Assuming the number is stored in row 5, column 2
                 create_interface(num_sensors)
             except ValueError:
                 print("Invalid number of sensors in the CSV file.")

@@ -24,12 +24,8 @@ class Control_FlowBus(serial.Serial):
         ******************************************"""
         serial.Serial.__init__(self, comport)  # inicialización de la clase padre
         self.baudrate = 38400  # configuración velocidad comunicación 38400 baudios
-        self.bytesize = (
-            serial.EIGHTBITS
-        )  # configuración tamaño paquete de datos a 8 bits
-        self.parity = (
-            serial.PARITY_NONE
-        )  # configuración bit de paridad, sin bit de paridad
+        self.bytesize = serial.EIGHTBITS  # configuración tamaño paquete de datos a 8 bits
+        self.parity = serial.PARITY_NONE  # configuración bit de paridad, sin bit de paridad
         self.stopbits = serial.STOPBITS_ONE  # configuración de bits de stop, un bit
         self.timeout = 1  # configuración tiempo de espera, 1 ms
 
@@ -96,9 +92,7 @@ class Control_FlowBus(serial.Serial):
         *********************************************************************************
         """
         try:
-            pnser = (
-                ":07" + nodo + "047163716300\r\n"
-            )  # se crea trama para pedir número de serie
+            pnser = ":07" + nodo + "047163716300\r\n"  # se crea trama para pedir número de serie
             self.write(pnser.encode())
             numser = self.readline()
             numser = numser[13:31]  # se guarda el dato interesado
@@ -134,9 +128,7 @@ class Control_FlowBus(serial.Serial):
         Se pide las unidades de la capacidad a cada Massflow conectado
         ***************************************************************************"""
         try:
-            pcap = (
-                ":07" + nodo + "04017F017F07\r\n"
-            )  # se crea trama para pedir capacidad (4D014D)
+            pcap = ":07" + nodo + "04017F017F07\r\n"  # se crea trama para pedir capacidad (4D014D)
             self.write(pcap.encode())
             cap = self.readline()
             cap = cap[13:27]

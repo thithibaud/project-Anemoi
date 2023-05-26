@@ -46,9 +46,7 @@ def load_csv_data(filename):
         reader = csv.reader(file)
         data = list(reader)
         try:
-            num_sensors = int(
-                data[4][1]
-            )  # Assuming the number is stored in row 5, column 2
+            num_sensors = int(data[4][1])  # Assuming the number is stored in row 5, column 2
         except ValueError:
             print("Invalid number of sensors in the CSV file.")
 
@@ -135,15 +133,11 @@ def update_measurement(node):
 # Function to save the data points to a CSV file
 def save_to_csv():
     # Open the save file dialog
-    filename = filedialog.asksaveasfilename(
-        defaultextension=".csv", filetypes=[("CSV Files", "*.csv")]
-    )
+    filename = filedialog.asksaveasfilename(defaultextension=".csv", filetypes=[("CSV Files", "*.csv")])
     if filename:
         with open(filename, "w", newline="") as file:
             writer = csv.writer(file)
-            writer.writerow(
-                ["Timestamp", "Node", "Measurement", "Setpoint"]
-            )  # Write headers
+            writer.writerow(["Timestamp", "Node", "Measurement", "Setpoint"])  # Write headers
             for data_point in data_points:
                 writer.writerow(data_point)
 
@@ -157,19 +151,13 @@ if filename:
     load_csv_data(filename)
 
 # Create the start, stop, and save buttons
-start_button = ttk.Button(
-    buttons_frame, text="Start", command=start_measurement, state="normal"
-)
+start_button = ttk.Button(buttons_frame, text="Start", command=start_measurement, state="normal")
 start_button.grid(row=0, column=0, padx=5, pady=5)
 
-stop_button = ttk.Button(
-    buttons_frame, text="Stop", command=stop_measurement, state="disabled"
-)
+stop_button = ttk.Button(buttons_frame, text="Stop", command=stop_measurement, state="disabled")
 stop_button.grid(row=0, column=1, padx=5, pady=5)
 
-save_button = ttk.Button(
-    buttons_frame, text="Save to CSV", command=save_to_csv, state="disabled"
-)
+save_button = ttk.Button(buttons_frame, text="Save to CSV", command=save_to_csv, state="disabled")
 save_button.grid(row=0, column=2, padx=5, pady=5)
 
 # Start the Tkinter event loop

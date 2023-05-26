@@ -29,15 +29,7 @@ def find_MFCs(cancel_event):
         capacity = elflow.get_capacity(node)
         unit = elflow.get_unit(node)
         if str(number) != "NA":
-            print(
-                "node: "
-                + node
-                + "  SN: "
-                + str(number)
-                + " capacity: "
-                + str(capacity)
-                + unit
-            )
+            print("node: " + node + "  SN: " + str(number) + " capacity: " + str(capacity) + unit)
             if number in SNs.values():
                 print("An instrument has duplicated nodes")
             else:
@@ -76,14 +68,7 @@ def display_results():
         global capacity, unit
         result_text.insert(
             tk.END,
-            "Node: "
-            + node
-            + "  SN: "
-            + str(number)
-            + " Capacity: "
-            + str(capacities[node])
-            + units[node]
-            + "\n",
+            "Node: " + node + "  SN: " + str(number) + " Capacity: " + str(capacities[node]) + units[node] + "\n",
         )
     result_text.config(state="disabled")
 
@@ -141,9 +126,7 @@ loading_bar.grid(row=1, column=0, columnspan=2, padx=10, pady=10)
 loading_button = ttk.Button(frame, text="Find MFCs", command=start_loading)
 loading_button.grid(row=2, column=0, padx=5, pady=5)
 
-cancel_button = ttk.Button(
-    frame, text="Cancel", command=cancel_loading, state="disabled"
-)
+cancel_button = ttk.Button(frame, text="Cancel", command=cancel_loading, state="disabled")
 cancel_button.grid(row=2, column=1, padx=5, pady=5)
 
 retry_button = ttk.Button(frame, text="Retry", command=start_loading, state="disabled")

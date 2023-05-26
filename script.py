@@ -85,9 +85,7 @@ def load_csv_data(filename):
         reader = csv.reader(file)
         data = list(reader)
         try:
-            num_sensors = int(
-                data[4][1]
-            )  # Assuming the number is stored in row 5, column 2
+            num_sensors = int(data[4][1])  # Assuming the number is stored in row 5, column 2
         except ValueError:
             print("Invalid number of sensors in the CSV file.")
 
@@ -143,8 +141,8 @@ def load_csv_data(filename):
     image_title_label.pack()
 
     # Create the image label
-    if (num_sensors >= 3):
-        image = tk.PhotoImage(file='image/diag2.png')
+    if num_sensors >= 3:
+        image = tk.PhotoImage(file="image/diag2.png")
 
     if num_sensors >= 2:
         image = tk.PhotoImage(file="image/diag2.png")
@@ -162,9 +160,7 @@ def load_csv_data(filename):
     text_field.pack()
 
     # Save Button
-    save_button = ttk.Button(
-        config_frame, text="Save", command=lambda: save_data(text_frame, text_field)
-    )
+    save_button = ttk.Button(config_frame, text="Save", command=lambda: save_data(text_frame, text_field))
     save_button.grid(row=5, column=1)
 
 

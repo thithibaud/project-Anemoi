@@ -106,9 +106,7 @@ def load_csv_data(filename):
         reader = csv.reader(file)
         data = list(reader)
         try:
-            num_sensors = int(
-                data[4][1]
-            )  # Assuming the number is stored in row 5, column 2
+            num_sensors = int(data[4][1])  # Assuming the number is stored in row 5, column 2
         except ValueError:
             print("Invalid number of sensors in the CSV file.")
 
