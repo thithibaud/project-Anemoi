@@ -3,20 +3,23 @@ import tkinter.ttk as ttk
 import sv_ttk
 import os
 
+
 # Create a function to run the "manual.py" script
 def run_manual():
-    root.state(newstate='withdraw')
-    command = 'python3 manual.py'
+    root.state(newstate="withdraw")
+    command = "python3 manual.py"
     os.system(command)
-    root.state(newstate='normal')
+    root.state(newstate="normal")
+
 
 # Create a function to run the "script.py" script
 def run_script():
-    root.state(newstate='withdraw')
-    command = 'python3 script_generate.py'
+    root.state(newstate="withdraw")
+    command = "python3 script_generate.py"
     os.system(command)
-    root.state(newstate='normal')
-    
+    root.state(newstate="normal")
+
+
 # Create the main window
 root = tk.Tk()
 sv_ttk.use_light_theme()

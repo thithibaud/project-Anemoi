@@ -30,7 +30,7 @@ buttons_frame = ttk.Frame(root, padding=5)
 buttons_frame.grid(row=3, column=0)
 
 # Create an instance of Control_FlowBus
-mfc = com.Control_FlowBus('/dev/ttyUSB0')
+mfc = com.Control_FlowBus("/dev/ttyUSB0")
 
 # Variables to hold widget references
 measurement_label = {}
@@ -39,13 +39,16 @@ measurement = {}
 setpoint = {}
 data_points = []  # Array to save all data points
 
+
 # Function to load CSV data and create measurement labels
 def load_csv_data(filename):
-    with open(filename, 'r') as file:
+    with open(filename, "r") as file:
         reader = csv.reader(file)
         data = list(reader)
         try:
-            num_sensors = int(data[4][1])  # Assuming the number is stored in row 5, column 2
+            num_sensors = int(
+                data[4][1]
+            )  # Assuming the number is stored in row 5, column 2
         except ValueError:
             print("Invalid number of sensors in the CSV file.")
 
@@ -57,6 +60,7 @@ def load_csv_data(filename):
     # Create the measurement labels and setpoint sliders
     for node in nodes:
         create_interface(node)
+
 
 # Function to create interface for each MFC
 def create_interface(node):
@@ -76,9 +80,16 @@ def create_interface(node):
     setpoint_label = ttk.Label(measurement_frame, text="Setpoint: ")
     setpoint_label.pack()
 
-    setpoint_slider[node] = ttk.Scale(measurement_frame, from_=0, to=100, orient=tk.HORIZONTAL, length=200,
-                                     command=lambda value, node=node: set_setpoint(node, value))
+    setpoint_slider[node] = ttk.Scale(
+        measurement_frame,
+        from_=0,
+        to=100,
+        orient=tk.HORIZONTAL,
+        length=200,
+        command=lambda value, node=node: set_setpoint(node, value),
+    )
     setpoint_slider[node].pack()
+
 
 # Function to set the setpoint for an MFC
 def set_setpoint(node, setpoint):
@@ -87,6 +98,7 @@ def set_setpoint(node, setpoint):
         mfc.send_setpoint(str(node), setpoint)
     except ValueError:
         print("Invalid setpoint value.")
+
 
 # Function to start the measurement
 def start_measurement():
@@ -97,17 +109,20 @@ def start_measurement():
     save_button.config(state="disabled")
     measurement_updates()
 
+
 # Function to stop the measurement
 def stop_measurement():
     start_button.config(state="normal")
     stop_button.config(state="disabled")
     save_button.config(state="normal")
 
+
 # Function to update the measurement values
 def measurement_updates():
     for node in measurement_label:
         update_measurement(node)
     root.after(1000, measurement_updates)
+
 
 # Function to update the measurement value for a node
 def update_measurement(node):
@@ -116,33 +131,45 @@ def update_measurement(node):
     measurement_label[node].config(text=f"Measurement: {measurement[node]}")
     data_points.append((datetime.now(), node, measurement[node], setpoint[node]))
 
+
 # Function to save the data points to a CSV file
 def save_to_csv():
     # Open the save file dialog
-    filename = filedialog.asksaveasfilename(defaultextension=".csv", filetypes=[("CSV Files", "*.csv")])
+    filename = filedialog.asksaveasfilename(
+        defaultextension=".csv", filetypes=[("CSV Files", "*.csv")]
+    )
     if filename:
-        with open(filename, 'w', newline='') as file:
+        with open(filename, "w", newline="") as file:
             writer = csv.writer(file)
-            writer.writerow(["Timestamp", "Node", "Measurement", "Setpoint"])  # Write headers
+            writer.writerow(
+                ["Timestamp", "Node", "Measurement", "Setpoint"]
+            )  # Write headers
             for data_point in data_points:
                 writer.writerow(data_point)
+
 
 # Load CSV data and create measurement labels
 filename = os.environ.get("data_config_filename")
 if not ((filename is not None) and os.path.exists(filename)):
-    filename = filedialog.askopenfilename(filetypes=[('CSV Files', '*.csv')])
+    filename = filedialog.askopenfilename(filetypes=[("CSV Files", "*.csv")])
 
 if filename:
     load_csv_data(filename)
 
 # Create the start, stop, and save buttons
-start_button = ttk.Button(buttons_frame, text="Start", command=start_measurement, state="normal")
+start_button = ttk.Button(
+    buttons_frame, text="Start", command=start_measurement, state="normal"
+)
 start_button.grid(row=0, column=0, padx=5, pady=5)
 
-stop_button = ttk.Button(buttons_frame, text="Stop", command=stop_measurement, state="disabled")
+stop_button = ttk.Button(
+    buttons_frame, text="Stop", command=stop_measurement, state="disabled"
+)
 stop_button.grid(row=0, column=1, padx=5, pady=5)
 
-save_button = ttk.Button(buttons_frame, text="Save to CSV", command=save_to_csv, state="disabled")
+save_button = ttk.Button(
+    buttons_frame, text="Save to CSV", command=save_to_csv, state="disabled"
+)
 save_button.grid(row=0, column=2, padx=5, pady=5)
 
 # Start the Tkinter event loop
