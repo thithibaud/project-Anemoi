@@ -26,17 +26,21 @@ mfc = com.Control_FlowBus("/dev/ttyUSBPort2")
 measurement_frame = ttk.Frame(root, padding=5)
 measurement_frame.grid(row=0, column=0)
 
+# Create a frame for the alim section
+alim_frame = ttk.Frame(root, padding=5)
+alim_frame.grid(row=1, column=0)
+
 # Create a frame for the time section
 time_frame = ttk.Frame(root, padding=5)
-time_frame.grid(row=1, column=0)
+time_frame.grid(row=2, column=0)
 
 # Create a frame for the text field
 text_field_frame = ttk.Frame(root, padding=5)
-text_field_frame.grid(row=2, column=0)
+text_field_frame.grid(row=3, column=0)
 
 # Create a frame for the buttons
 buttons_frame = ttk.Frame(root, padding=5)
-buttons_frame.grid(row=3, column=0)
+buttons_frame.grid(row=4, column=0)
 
 # Variables to hold widget references
 measurement_label = {}
@@ -155,7 +159,7 @@ def start_script():
         current_time = array_script[1][script_index]
         start_time = time.time()
         update_MFCs(current_operation)
-        current_operation_label.config(text=f"Current Status: {current_operation}")
+        current_operation_label.config(text=f"Current Operation: {current_operation}")
         loading_bar_update(current_time, start_time)
         remaining_time = (len(array_script[0]) - script_index - 1) * current_time
         total_time_remaning_label.config(text=f"Total Time Remaining: {remaining_time} seconds")
@@ -203,7 +207,7 @@ def cancel_script():
     start_button.config(state="normal")  # Enable the start button
     cancel_button.config(state="disabled")  # Disable the cancel button
     retry_button.config(state="normal")  # Enable the retry button
-    current_operation_label.config(text="Current Status: Cancelled")
+    current_operation_label.config(text="Current Operation: Cancelled")
 
 
 def reset_script():
@@ -214,7 +218,7 @@ def reset_script():
     retry_button.config(state="disabled")
     total_operation_loading_bar.config(value=0)
     current_operation_loading_bar.config(value=0)
-    current_operation_label.config(text="Current Status: Ready")
+    current_operation_label.config(text="Current Operation: Ready")
     next_operation_label.config(text=f"Next Operation: {array_script[0][0]}")
     total_time_remaning_label.config(text=f"Total Time Remaining: {sum(array_script[1])} seconds")
     global x_data, y_data, setpoint_data
@@ -293,9 +297,11 @@ def update_current_measurments():
 def update_temperature(temperature):  # sourcery skip: extract-duplicate-method
     # Function to update the temperature
     print(f"Updating temperature to {temperature} degrees Celsius")
+    expected_temp_label.config(text=f"Expected Temperature: {temperature} degrees Celsius")
     if temperature >= 30:
         current = 0.1303 * math.log(temperature) - 0.4116
         print(f"Current : {current}")
+        alim_label.config(text=f"Alim Status: Current :{current}, Voltage :5V, outuput: on")
         dps.setVoltage(5)
         dps.setCurrent(current)
         dps.setOutput(True)
@@ -303,6 +309,7 @@ def update_temperature(temperature):  # sourcery skip: extract-duplicate-method
         dps.setVoltage(0)
         dps.setCurrent(0)
         dps.setOutput(False)
+        alim_label.config(text=f"Alim Status: Current :{0A}, Voltage :0V, outuput: off")
 
 def save_to_csv():
     # Open save file dialog
@@ -365,7 +372,13 @@ if script_filename:
     load_script_data(script_filename)
 
 
-current_operation_label = ttk.Label(time_frame, text="Current status:")
+expected_temp_label = ttk.Label(alim_frame, text="Expected Temperature:")
+expected_temp_label.grid(row=0, column=0, padx=10, pady=10)
+
+alim_label = ttk.Label(alim_frame, text="Alim Status:")
+alim_label.grid(row=0, column=1, padx=10, pady=10)
+
+current_operation_label = ttk.Label(time_frame, text="Current Operation:")
 current_operation_label.grid(row=0, column=0, columnspan=2, padx=10, pady=10)
 
 current_operation_loading_bar = ttk.Progressbar(time_frame, length=400, mode="determinate")
@@ -380,18 +393,17 @@ total_operation_loading_bar.grid(row=3, column=0, columnspan=2, padx=10, pady=10
 next_operation_label = ttk.Label(time_frame, text="Next operation:")
 next_operation_label.grid(row=4, column=0, columnspan=2, padx=10, pady=10)
 
-
 start_button = ttk.Button(buttons_frame, text="Start", command=start_script, state="normal")
 start_button.grid(row=0, column=1, padx=5, pady=5)
 
 cancel_button = ttk.Button(buttons_frame, text="Cancel", command=cancel_script, state="disabled")
 cancel_button.grid(row=0, column=2, padx=5, pady=5)
 
-retry_button = ttk.Button(buttons_frame, text="Retry", command=lambda: reset_script(), state="disabled")
+retry_button = ttk.Button(buttons_frame, text="Retry", command=reset_script, state="disabled")
 retry_button.grid(row=0, column=3, padx=5, pady=5)
 
 save_button = ttk.Button(
-    buttons_frame, text="Save to CSV", command=lambda: save_to_csv(), state="disabled"
+    buttons_frame, text="Save to CSV", command=save_to_csv, state="disabled"
 )
 save_button.grid(row=0, column=4, padx=5, pady=5)
 

@@ -1,6 +1,6 @@
-Number of Cycles : 2
-Start Purge Time (in s): 3
-Cycle Time (in s): 5
-Final Purge Time (in s): 6
-Behind Cycle Time (in s): 2
-Temperature (in celcius): 25
+Number of Cycles : 4
+Start Purge Time (in s): 5
+Cycle Time (in s): 10
+Final Purge Time (in s): 10
+Behind Cycle Time (in s): 5
+Temperature (in celcius): 100
