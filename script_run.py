@@ -296,12 +296,12 @@ def update_current_measurments():
 
 def update_temperature(temperature):  # sourcery skip: extract-duplicate-method
     # Function to update the temperature
-    print(f"Updating temperature to {temperature} degrees Celsius")
-    expected_temp_label.config(text=f"Expected Temperature: {temperature} degrees Celsius")
+    print(f"Updating temperature to {temperature}  Celsius")
+    expected_temp_label.config(text=f"Expected Temperature: {temperature}\xb0C")
     if temperature >= 30:
         current = 0.1303 * math.log(temperature) - 0.4116
         print(f"Current : {current}")
-        alim_label.config(text=f"Alim Status: Current :{current}, Voltage :5V, outuput: on")
+        alim_label.config(text=f"Alim Status: Current :{current:.3f}A, Voltage :5V, output: on")
         dps.setVoltage(5)
         dps.setCurrent(current)
         dps.setOutput(True)
@@ -309,7 +309,7 @@ def update_temperature(temperature):  # sourcery skip: extract-duplicate-method
         dps.setVoltage(0)
         dps.setCurrent(0)
         dps.setOutput(False)
-        alim_label.config(text=f"Alim Status: Current :{0A}, Voltage :0V, outuput: off")
+        alim_label.config(text=f"Alim Status: Current :0A, Voltage :0V, output: off")
 
 def save_to_csv():
     # Open save file dialog
