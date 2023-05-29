@@ -224,7 +224,7 @@ def reset_script():
 
 
 def update_MFCs(current_operation):
-    # sourcery skip: assign-if-exp, hoist-statement-from-if
+    # sourcery skip: assign-if-exp, hoist-similar-statement-from-if, hoist-statement-from-if
     global dict_nodes, gas_number, num_sensors, temperature
     print(current_operation)
     if current_operation in [
