@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import csv
 import tkinter as tk
 import tkinter.ttk as ttk
