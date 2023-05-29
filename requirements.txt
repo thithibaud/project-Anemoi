@@ -1,0 +1,5 @@
+matplotlib==3.5.3
+matplotlib==3.0.2
+minimalmodbus==2.0.1
+pyserial==3.4
+sv_ttk==2.4.5

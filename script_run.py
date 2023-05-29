@@ -138,7 +138,7 @@ def load_script_data(script_filename):
 def create_interface(node, gas):
     # Create a label to display the measurement
     measurement_label[node] = ttk.Label(measurement_frame, text=f"MFC for {gas} ")
-    measurement_label[node].pack(padx=10, pady=10)
+    measurement_label[node].pack(padx=5, pady=5)
 
     # Get the capacity and unit
     capacity = mfc.get_capacity(str(node))
@@ -146,7 +146,7 @@ def create_interface(node, gas):
 
     # Create a label to display the capacity and unit
     capa_unit_label = ttk.Label(measurement_frame, text=f"Capacity: {capacity} {unit}")
-    capa_unit_label.pack(padx=10, pady=10)
+    capa_unit_label.pack(padx=5, pady=5)
 
 
 def start_script():
@@ -274,12 +274,16 @@ root.protocol("WM_DELETE_WINDOW", on_close)
 # Function to update the current setpoint label
 def update_current_measurments():
     global start_time
+    voltage = dps.getVoltage()
+    current = dps.getCurrent()
+    alim_label.config(text=f"Alim Status: Current :{current:.3f}A, Voltage :{voltage}V")
     for gas, node in dict_nodes.items():
         setpoint[node] = mfc.get_setpoint(str(node))
         measurement[node] = mfc.get_measurement(str(node))
         measurement_label[node].config(
             text=f"MFC for {gas}, Setpoint: {setpoint[node]},  Measurement :{measurement[node]}"
         )
+        
         # Update time
         current_time = time.time() - start_time
         current_time = round(current_time)
@@ -301,7 +305,6 @@ def update_temperature(temperature):  # sourcery skip: extract-duplicate-method
     if temperature >= 30:
         current = 0.1303 * math.log(temperature) - 0.4116
         print(f"Current : {current}")
-        alim_label.config(text=f"Alim Status: Current :{current:.3f}A, Voltage :5V, output: on")
         dps.setVoltage(5)
         dps.setCurrent(current)
         dps.setOutput(True)
@@ -309,7 +312,6 @@ def update_temperature(temperature):  # sourcery skip: extract-duplicate-method
         dps.setVoltage(0)
         dps.setCurrent(0)
         dps.setOutput(False)
-        alim_label.config(text=f"Alim Status: Current :0A, Voltage :0V, output: off")
 
 def save_to_csv():
     # Open save file dialog
@@ -373,25 +375,25 @@ if script_filename:
 
 
 expected_temp_label = ttk.Label(alim_frame, text="Expected Temperature:")
-expected_temp_label.grid(row=0, column=0, padx=10, pady=10)
+expected_temp_label.grid(row=0, column=0, padx=5, pady=5)
 
 alim_label = ttk.Label(alim_frame, text="Alim Status:")
-alim_label.grid(row=0, column=1, padx=10, pady=10)
+alim_label.grid(row=0, column=1, padx=5, pady=5)
 
 current_operation_label = ttk.Label(time_frame, text="Current Operation:")
-current_operation_label.grid(row=0, column=0, columnspan=2, padx=10, pady=10)
+current_operation_label.grid(row=0, column=0, columnspan=2, padx=5, pady=5)
 
-current_operation_loading_bar = ttk.Progressbar(time_frame, length=400, mode="determinate")
-current_operation_loading_bar.grid(row=1, column=0, columnspan=2, padx=10, pady=10)
+current_operation_loading_bar = ttk.Progressbar(time_frame, length=600, mode="determinate")
+current_operation_loading_bar.grid(row=1, column=0, columnspan=2, padx=5, pady=5)
 
 total_time_remaning_label = ttk.Label(time_frame, text="Total time remaining:")
-total_time_remaning_label.grid(row=2, column=0, columnspan=2, padx=10, pady=10)
+total_time_remaning_label.grid(row=2, column=0, columnspan=2, padx=5, pady=5)
 
-total_operation_loading_bar = ttk.Progressbar(time_frame, length=400, mode="determinate")
-total_operation_loading_bar.grid(row=3, column=0, columnspan=2, padx=10, pady=10)
+total_operation_loading_bar = ttk.Progressbar(time_frame, length=600, mode="determinate")
+total_operation_loading_bar.grid(row=3, column=0, columnspan=2, padx=5, pady=5)
 
 next_operation_label = ttk.Label(time_frame, text="Next operation:")
-next_operation_label.grid(row=4, column=0, columnspan=2, padx=10, pady=10)
+next_operation_label.grid(row=4, column=0, columnspan=2, padx=5, pady=5)
 
 start_button = ttk.Button(buttons_frame, text="Start", command=start_script, state="normal")
 start_button.grid(row=0, column=1, padx=5, pady=5)
