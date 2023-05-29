@@ -84,6 +84,8 @@ def load_csv_data(filename):
     # Create the measurement labels
     for gas, node in dict_nodes.items():
         create_interface(node, gas)
+    
+    return nodes
 
 
 def load_script_data(script_filename):
@@ -132,7 +134,7 @@ def load_script_data(script_filename):
 def create_interface(node, gas):
     # Create a label to display the measurement
     measurement_label[node] = ttk.Label(measurement_frame, text=f"MFC for {gas} ")
-    measurement_label[node].pack()
+    measurement_label[node].pack(padx=10, pady=10)
 
     # Get the capacity and unit
     capacity = mfc.get_capacity(str(node))
@@ -140,7 +142,7 @@ def create_interface(node, gas):
 
     # Create a label to display the capacity and unit
     capa_unit_label = ttk.Label(measurement_frame, text=f"Capacity: {capacity} {unit}")
-    capa_unit_label.pack()
+    capa_unit_label.pack(padx=10, pady=10)
 
 
 def start_script():
@@ -301,7 +303,6 @@ def update_temperature(temperature):  # sourcery skip: extract-duplicate-method
         dps.setCurrent(0)
         dps.setOutput(False)
 
-
 def save_to_csv():
     # Open save file dialog
     file = filedialog.asksaveasfile(
@@ -350,8 +351,9 @@ filename = os.environ.get("data_config_filename")
 if not ((filename is not None) and os.path.exists(filename)):
     filename = filedialog.askopenfilename(filetypes=[("CSV Files", "*.csv")])
 
+nodes = []
 if filename:
-    load_csv_data(filename)
+    nodes = load_csv_data(filename)
 # os variable
 script_filename = os.environ.get("script_filename")
 if not ((script_filename is not None) and os.path.exists(script_filename)):
@@ -386,7 +388,9 @@ cancel_button.grid(row=0, column=2, padx=5, pady=5)
 retry_button = ttk.Button(buttons_frame, text="Retry", command=lambda: reset_script(), state="disabled")
 retry_button.grid(row=0, column=3, padx=5, pady=5)
 
-save_button = ttk.Button(buttons_frame, text="Save to CSV", command=lambda: save_to_csv(), state="disabled")
+save_button = ttk.Button(
+    buttons_frame, text="Save to CSV", command=lambda: save_to_csv(), state="disabled"
+)
 save_button.grid(row=0, column=4, padx=5, pady=5)
 
 update_current_measurments()
