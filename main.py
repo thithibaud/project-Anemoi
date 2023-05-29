@@ -58,7 +58,7 @@ class CredentialGUI:
             # generate CSV for config data
             gen_csv(user_id, password)
             # Check if instrument are connected before running it
-            if os.path.exists("/dev/ttyUSB0"):
+            if os.path.exists("/dev/ttyUSBPort2"):
                 root.state(newstate="withdraw")
                 command = f"python3 connect_mfc.py"
                 os.system(command)

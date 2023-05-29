@@ -31,7 +31,7 @@ image_frame = ttk.Frame(root, padding=5)
 image_frame.grid(row=3, column=0, columnspan=2)
 
 # Create an instance of Control_FlowBus
-mfc = com.Control_FlowBus("/dev/ttyUSB0")
+mfc = com.Control_FlowBus("/dev/ttyUSBPort2")
 
 # Variables to hold widget references
 measurement_label = {}

@@ -1,7 +1,7 @@
 import pydps, time
 
 # dps Test Example
-dps = pydps.dps_psu("/dev/ttyUSB0", 1)  # port name, slave address (in decimal)
+dps = pydps.dps_psu("/dev/ttyUSBPort2", 1)  # port name, slave address (in decimal)
 
 
 # make a csv like measurement
