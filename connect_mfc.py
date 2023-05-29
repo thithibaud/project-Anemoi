@@ -8,7 +8,7 @@ import comunicacion as com
 import os
 import csv
 
-elflow = com.Control_FlowBus("/dev/ttyUSB0")
+elflow = com.Control_FlowBus("/dev/ttyUSBPort2")
 capacities = {}
 units = {}
 SNs = {}
