@@ -1,7 +1,7 @@
 # project Anemoi
 A python GUI to automate and control experiments using Massflow controller from bronkhorst (expected to be using EL-FLOW) from a raspeberrypi.
 
-The MFCs are expected to be plug in to USB using a serial tu USB adaptator and accesible from '/dev/ttyUSBPort2'
+The MFCs are expected to be plug in to USB using a serial tu USB adaptator and accesible from ``/dev/ttyUSBPort2``
 see https://forums.raspberrypi.com/viewtopic.php?t=90265\ for more info.
 
 ## What can it do:
