@@ -4,7 +4,7 @@ A python GUI to automate and control experiments using Massflow controller from 
 The MFCs are expected to be plug in to USB using a serial tu USB adaptator and accesible from '/dev/ttyUSBPort2'
 see https://forums.raspberrypi.com/viewtopic.php?t=90265\ for more info.
 
-##Program
+## Program
 what can it do:
 * Store username of user
 * Control the MFCs either manually or generate a script that can be run for automated procedure
@@ -15,7 +15,7 @@ what can it do:
 * save as a CSV the setpoints and mesurements of each MFC
 * Can load and run script while dipaying the current status of the MFCs and power supply
 
-##requirements:
+## Requirements:
 ```
 matplotlib
 minimalmodbus
@@ -33,11 +33,10 @@ cf communcation.py
 Control of power supply :
 https://github.com/Ultrawipf/pydps
 
-##Developed with:
+## Developed with:
 Python 3.7
 
-##Download and run
-## Download & run:
+## Download and run
 ```
 git clone https://github.com/thithibaud/project-Anemoi
 ```
