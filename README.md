@@ -4,8 +4,7 @@ A python GUI to automate and control experiments using Massflow controller from 
 The MFCs are expected to be plug in to USB using a serial tu USB adaptator and accesible from '/dev/ttyUSBPort2'
 see https://forums.raspberrypi.com/viewtopic.php?t=90265\ for more info.
 
-## Program
-what can it do:
+## What can it do:
 * Store username of user
 * Control the MFCs either manually or generate a script that can be run for automated procedure
 * Discover every MFCs connected
