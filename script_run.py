@@ -89,9 +89,9 @@ def load_csv_data(filename):
 
 
 def load_script_data(script_filename):
-    script = open(script_filename, "r")
-    data = script.read()
-    script.close()
+    # sourcery skip: for-index-underscore, use-itertools-product
+    with open(script_filename, "r") as script:
+        data = script.read()
     global temperature
     # Extracting values from the script
     lines = data.split("\n")
@@ -114,7 +114,7 @@ def load_script_data(script_filename):
     list_operations = ["Start Purge Time"]
     list_times = [start_purge_time]
 
-    for n in range(0, num_cycles):
+    for n in range(num_cycles):
         for i in range(num_sensors - 1):
             list_operations.append("Cycle Time")
             list_times.append(cycle_time)
@@ -203,7 +203,7 @@ def cancel_script():
     start_button.config(state="normal")  # Enable the start button
     cancel_button.config(state="disabled")  # Disable the cancel button
     retry_button.config(state="normal")  # Enable the retry button
-    current_operation_label.config(text=f"Current Status: Cancelled")  # Update the status label
+    current_operation_label.config(text="Current Status: Cancelled")
 
 
 def reset_script():
@@ -214,7 +214,7 @@ def reset_script():
     retry_button.config(state="disabled")
     total_operation_loading_bar.config(value=0)
     current_operation_loading_bar.config(value=0)
-    current_operation_label.config(text=f"Current Status: Ready")
+    current_operation_label.config(text="Current Status: Ready")
     next_operation_label.config(text=f"Next Operation: {array_script[0][0]}")
     total_time_remaning_label.config(text=f"Total Time Remaining: {sum(array_script[1])} seconds")
     global x_data, y_data, setpoint_data
@@ -224,6 +224,7 @@ def reset_script():
 
 
 def update_MFCs(current_operation):
+    # sourcery skip: assign-if-exp, hoist-statement-from-if
     global dict_nodes, gas_number, num_sensors, temperature
     print(current_operation)
     if current_operation in [
@@ -347,6 +348,7 @@ def save_to_csv():
 
 
 # os variable
+# sourcery skip: assign-if-exp, introduce-default-else
 filename = os.environ.get("data_config_filename")
 if not ((filename is not None) and os.path.exists(filename)):
     filename = filedialog.askopenfilename(filetypes=[("CSV Files", "*.csv")])

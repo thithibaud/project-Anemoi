@@ -17,7 +17,7 @@ SNs = {}
 def find_MFCs(cancel_event):
     global SNs
     total_nodes = 10
-    for i in range(0, total_nodes):
+    for i in range(total_nodes):
         if cancel_event.is_set():
             break
         elif i <= 9:
