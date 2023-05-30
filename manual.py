@@ -14,6 +14,7 @@ import os
 import csv
 import time
 
+os.environ["QT_LOGGING_RULES"] = "qt5ct.debug=false"
 
 # Create the main window
 root = tk.Tk()
