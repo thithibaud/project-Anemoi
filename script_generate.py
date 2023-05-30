@@ -172,19 +172,19 @@ def load_csv_data(filename):
     cycle_time_entry = ttk.Entry(config_frame)
     cycle_time_entry.grid(row=2, column=1)
 
-    # Final Purge Time
-    final_purge_label = ttk.Label(config_frame, text="Final Purge Time (in s):")
-    final_purge_label.grid(row=4, column=0)
-    global final_purge_entry
-    final_purge_entry = ttk.Entry(config_frame)
-    final_purge_entry.grid(row=4, column=1)
-
     # Behind Cycle Time
     behind_cycle_label = ttk.Label(config_frame, text="Behind Cycle Time (in s):")
     behind_cycle_label.grid(row=3, column=0)
     global behind_cycle_entry
     behind_cycle_entry = ttk.Entry(config_frame)
     behind_cycle_entry.grid(row=3, column=1)
+    
+    # Final Purge Time
+    final_purge_label = ttk.Label(config_frame, text="Final Purge Time (in s):")
+    final_purge_label.grid(row=4, column=0)
+    global final_purge_entry
+    final_purge_entry = ttk.Entry(config_frame)
+    final_purge_entry.grid(row=4, column=1)
 
     # Temperature
     temperature_label = ttk.Label(config_frame, text="Temperature (in celcius):")
