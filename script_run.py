@@ -28,9 +28,9 @@ mfc = com.Control_FlowBus("/dev/ttyUSBPort2")
 measurement_frame = ttk.Frame(root, padding=5)
 measurement_frame.grid(row=0, column=0)
 
-# Create a frame for the alim section
-alim_frame = ttk.Frame(root, padding=5)
-alim_frame.grid(row=1, column=0)
+# Create a frame for the power supply section
+power_supply_frame = ttk.Frame(root, padding=5)
+power_supply_frame.grid(row=1, column=0)
 
 # Create a frame for the time section
 time_frame = ttk.Frame(root, padding=5)
@@ -90,7 +90,7 @@ def load_csv_data(filename):
     # Create the measurement labels
     for gas, node in dict_nodes.items():
         create_interface(node, gas)
-    
+
     return nodes
 
 
@@ -278,14 +278,14 @@ def update_current_measurments():
     global start_time
     voltage = dps.getVoltage()
     current = dps.getCurrent()
-    alim_label.config(text=f"Alim Status: Current :{current:.3f}A, Voltage :{voltage}V")
+    power_supply_label.config(text=f"Power Supply Status: Current :{current:.3f}A, Voltage :{voltage}V")
     for gas, node in dict_nodes.items():
         setpoint[node] = mfc.get_setpoint(str(node))
         measurement[node] = mfc.get_measurement(str(node))
         measurement_label[node].config(
             text=f"MFC for {gas}, Setpoint: {setpoint[node]},  Measurement :{measurement[node]}"
         )
-        
+
         # Update time
         current_time = time.time() - start_time
         current_time = round(current_time)
@@ -314,6 +314,7 @@ def update_temperature(temperature):  # sourcery skip: extract-duplicate-method
         dps.setVoltage(0)
         dps.setCurrent(0)
         dps.setOutput(False)
+
 
 def save_to_csv():
     # Open save file dialog
@@ -376,11 +377,11 @@ if script_filename:
     load_script_data(script_filename)
 
 
-expected_temp_label = ttk.Label(alim_frame, text="Expected Temperature:")
+expected_temp_label = ttk.Label(power_supply_frame, text="Expected Temperature:")
 expected_temp_label.grid(row=0, column=0, padx=5, pady=5)
 
-alim_label = ttk.Label(alim_frame, text="Alim Status:")
-alim_label.grid(row=0, column=1, padx=5, pady=5)
+power_supply_label = ttk.Label(power_supply_frame, text="Power Supply Status:")
+power_supply_label.grid(row=0, column=1, padx=5, pady=5)
 
 current_operation_label = ttk.Label(time_frame, text="Current Operation:")
 current_operation_label.grid(row=0, column=0, columnspan=2, padx=5, pady=5)
@@ -406,9 +407,7 @@ cancel_button.grid(row=0, column=2, padx=5, pady=5)
 retry_button = ttk.Button(buttons_frame, text="Retry", command=reset_script, state="disabled")
 retry_button.grid(row=0, column=3, padx=5, pady=5)
 
-save_button = ttk.Button(
-    buttons_frame, text="Save to CSV", command=save_to_csv, state="disabled"
-)
+save_button = ttk.Button(buttons_frame, text="Save to CSV", command=save_to_csv, state="disabled")
 save_button.grid(row=0, column=4, padx=5, pady=5)
 
 update_current_measurments()
