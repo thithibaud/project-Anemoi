@@ -15,17 +15,7 @@ see https://forums.raspberrypi.com/viewtopic.php?t=90265\ for more info.
 * save as a CSV the setpoints and mesurements of each MFC
 * Can load and run script while dipaying the current status of the MFCs and power supply
 
-## Requirements:
-```
-matplotlib
-minimalmodbus
-pyserial
-sv_ttk
-```
-or 
-```
-  pip install -r requirements.txt
-```
+
 
 Communication with Bronkhorst (Mass) Flow Meters and Controllers :
 cf communcation.py
@@ -36,13 +26,29 @@ https://github.com/Ultrawipf/pydps
 ## Developed with:
 Python 3.7
 
-## Download and run
+### Download
 ```
 git clone https://github.com/thithibaud/project-Anemoi
 ```
 ```
 cd  project-Anemoi/
 ```
+### Requirements:
 ```
-python3 dps_GUI_program.py
+matplotlib
+minimalmodbus
+pyserial
+sv_ttk
+```
+or 
+```
+  pip install -r requirements.txt
+```
+and 
+```
+  sudo apt-get install python3-pil python3-pil.imagetk
+```
+### Run
+```
+python3 main.py
 ```
