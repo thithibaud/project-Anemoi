@@ -44,6 +44,10 @@ or
 ```
   pip install -r requirements.txt
 ```
+and 
+```
+  sudo apt-get install python3-pil python3-pil.imagetk
+```
 ### Run
 ```
 python3 main.py
