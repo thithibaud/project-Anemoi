@@ -182,7 +182,9 @@ def start_script():
         cancel_flag = False
         cancel_button.config(state="disabled")
         retry_button.config(state="normal")
-        save_button.config(state="normal")  # Enable the retry and save button after operation
+        save_button.config(state="normal")
+        # Enable the retry and save button after operation
+        reset_setpoints()
         # Set the current operation loading bar to 100 if the script is completed
         if script_index == len(array_script[0]):
             current_operation_loading_bar.config(value=100)
@@ -210,9 +212,11 @@ def cancel_script():
     cancel_button.config(state="disabled")  # Disable the cancel button
     retry_button.config(state="normal")  # Enable the retry button
     current_operation_label.config(text="Current Operation: Cancelled")
+    reset_setpoints()
 
 
 def reset_script():
+    reset_setpoints()
     global script_index, start_button, cancel_button, retry_button
     script_index = 0
     start_button.config(state="normal")
@@ -264,7 +268,13 @@ def update_MFCs(current_operation):
         update_temperature(temperature)
 
 
+def reset_setpoints():
+    for node in nodes:
+        mfc.send_setpoint(node, 0)  # Reset the setpoint to zero
+
+
 def on_close():
+    reset_setpoints()
     if loading_bar_repeat is not None:
         root.after_cancel(loading_bar_repeat)  # Stop the loading bar update
     root.destroy()
