@@ -187,7 +187,7 @@ def load_csv_data(filename):
     final_purge_entry.grid(row=4, column=1)
 
     # Temperature
-    temperature_label = ttk.Label(config_frame, text="Temperature (in celcius):")
+    temperature_label = ttk.Label(config_frame, text="Temperature ([25-300])\xb0C:")
     temperature_label.grid(row=5, column=0)
     global temperature_entry
     temperature_entry = ttk.Entry(config_frame)
