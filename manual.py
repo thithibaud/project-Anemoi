@@ -76,6 +76,7 @@ def start_measurement():
 def stop_measurement():
     global running
     running = False
+    reset_setpoints()
     start_button.config(state="normal")
     stop_button.config(state="disabled")
     reset_button.config(state="normal")
@@ -215,6 +216,11 @@ def set_setpoint_button(node, setpoint):
         print("Invalid setpoint value.")
     else:
         setpoint_input_entry[node].delete(0, tk.END)  # Clear the entry field if the setpoint was valid
+
+
+def reset_setpoints():
+    for node in nodes:
+        set_setpoint(node, 0)  # Reset the setpoint to zero
 
 
 def create_interface(node):
