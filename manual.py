@@ -77,7 +77,7 @@ def stop_measurement():
     global running
     running = False
     reset_setpoints()
-    start_button.config(state="normal")
+    start_button.config(state="disabled")
     stop_button.config(state="disabled")
     reset_button.config(state="normal")
     save_button.config(state="normal")
