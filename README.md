@@ -26,7 +26,7 @@ https://github.com/Ultrawipf/pydps
 ## Developed with:
 Python 3.7
 
-## Download and run
+### Download
 ```
 git clone https://github.com/thithibaud/project-Anemoi
 ```
@@ -44,6 +44,7 @@ or
 ```
   pip install -r requirements.txt
 ```
+### Run
 ```
 python3 main.py
 ```
