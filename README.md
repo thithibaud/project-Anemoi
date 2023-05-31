@@ -15,17 +15,7 @@ see https://forums.raspberrypi.com/viewtopic.php?t=90265\ for more info.
 * save as a CSV the setpoints and mesurements of each MFC
 * Can load and run script while dipaying the current status of the MFCs and power supply
 
-## Requirements:
-```
-matplotlib
-minimalmodbus
-pyserial
-sv_ttk
-```
-or 
-```
-  pip install -r requirements.txt
-```
+
 
 Communication with Bronkhorst (Mass) Flow Meters and Controllers :
 cf communcation.py
@@ -42,6 +32,17 @@ git clone https://github.com/thithibaud/project-Anemoi
 ```
 ```
 cd  project-Anemoi/
+```
+### Requirements:
+```
+matplotlib
+minimalmodbus
+pyserial
+sv_ttk
+```
+or 
+```
+  pip install -r requirements.txt
 ```
 ```
 python3 dps_GUI_program.py
