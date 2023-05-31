@@ -121,6 +121,7 @@ frame.grid()
 
 result_text = tk.Text(frame, width=50, height=10)
 result_text.grid(row=0, column=0, columnspan=2, padx=10, pady=10)
+result_text.config(state="disabled")
 
 loading_bar = ttk.Progressbar(frame, length=400, mode="determinate")
 loading_bar.grid(row=1, column=0, columnspan=2, padx=10, pady=10)
