@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 
+# sourcery skip: de-morgan, for-append-to-extend
 from datetime import datetime
 import tkinter as tk
 from tkinter import ttk
