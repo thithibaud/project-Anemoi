@@ -45,5 +45,5 @@ or
   pip install -r requirements.txt
 ```
 ```
-python3 dps_GUI_program.py
+python3 main.py
 ```
