@@ -194,7 +194,7 @@ def load_csv_data(filename):
     temperature_entry.grid(row=5, column=1)
 
     # Image title label
-    image_title_label = ttk.Label(image_frame, text="Diagramme experiment:")
+    image_title_label = ttk.Label(image_frame, text="Schematic diagram of experiment:")
     image_title_label.pack()
 
     # Create the image label
