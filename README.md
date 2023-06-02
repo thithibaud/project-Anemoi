@@ -2,7 +2,7 @@
 A python GUI to automate and control experiments using Massflow controller from bronkhorst (expected to be using EL-FLOW) from a raspeberrypi.
 
 The MFCs are expected to be plug in to USB using a serial to USB adaptator and accesible from ``/dev/ttyUSBPort2``
-The power supply powering the heater resitance is expected to be accesible from ``/dev/ttyUSBPor1``
+The voltage and current regulator power supply powering the heater resitance is expected to be accesible from ``/dev/ttyUSBPor1``
 see https://forums.raspberrypi.com/viewtopic.php?t=90265\ for more info.
 
 ## What can it do:
@@ -20,7 +20,7 @@ see https://forums.raspberrypi.com/viewtopic.php?t=90265\ for more info.
 Communication with Bronkhorst (Mass) Flow Meters and Controllers :
 cf communcation.py
 
-Control of power supply :
+Control of DPS5005 (power supply) :
 https://github.com/Ultrawipf/pydps
 
 ## Developed with:
