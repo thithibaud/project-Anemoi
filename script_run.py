@@ -58,7 +58,7 @@ y_data = {}
 setpoint_data = {}
 measurement = {}
 setpoint = {}
-setpoint_entry = {}
+expected_setpoint = {}
 start_time = float(0)
 
 # Adding this new variable outside any function
@@ -237,7 +237,7 @@ def reset_script():
 
 def update_MFCs(current_operation):
     # sourcery skip: assign-if-exp, hoist-similar-statement-from-if, hoist-statement-from-if
-    global dict_nodes, gas_number, num_sensors, temperature, setpoint_entry
+    global dict_nodes, gas_number, num_sensors, temperature, expected_setpoint
     print(current_operation)
     if current_operation in [
         "Start Purge Time",
@@ -257,7 +257,7 @@ def update_MFCs(current_operation):
     else:
         for gas, node in dict_nodes.items():
             if gas == f"gas {gas_number}":
-                setpoint = setpoint_entry
+                setpoint = expected_setpoint
                 mfc.send_setpoint(str(node), setpoint)
                 print(f"{gas} at node: {node} with setpoint: {mfc.get_setpoint(node)}")
             else:
