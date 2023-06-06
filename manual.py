@@ -225,7 +225,7 @@ def reset_setpoints():
 
 def create_interface(node):
     # Create a frame for the measurement section
-    measurement_frame = ttk.Frame(root, padding=5)
+    measurement_frame = ttk.Frame(root, padding=3)
     measurement_frame.pack()
 
     # Get the capacity, unit and SN
@@ -242,7 +242,7 @@ def create_interface(node):
     desired_setpoint_label[node].pack()
 
     # Create a frame for the setpoint section
-    setpoint_frame = ttk.Frame(root, padding=5)
+    setpoint_frame = ttk.Frame(root, padding=3)
     setpoint_frame.pack()
 
     # Create a label and slider for the setpoint
@@ -259,11 +259,11 @@ def create_interface(node):
     setpoint_slider[node].pack(side=tk.LEFT)
 
     # Create a frame for the setpoint labels
-    setpoint_labels_frame = ttk.Frame(root, padding=5)
+    setpoint_labels_frame = ttk.Frame(root, padding=3)
     setpoint_labels_frame.pack()
 
     # Create a frame for the setpoint input
-    setpoint_input_frame = ttk.Frame(root, padding=5)
+    setpoint_input_frame = ttk.Frame(root, padding=3)
     setpoint_input_frame.pack()
 
     # Create a label and entry for the setpoint input
