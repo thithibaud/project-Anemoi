@@ -57,8 +57,8 @@ x_data = {}
 y_data = {}
 setpoint_data = {}
 measurement = {}
-setpoint = 00
-setpoint_entry = {}
+setpoint = {}
+setpoint_entry = 00
 start_time = float(0)
 
 # Adding this new variable outside any function
@@ -99,7 +99,7 @@ def load_script_data(script_filename):
     # sourcery skip: for-index-underscore, use-itertools-product
     with open(script_filename, "r") as script:
         data = script.read()
-    global temperature
+    global temperature, setpoint_entry
     # Extracting values from the script
     lines = data.split("\n")
     values = {}
