@@ -42,6 +42,7 @@ start_purge_entry = None
 cycle_time_entry = None
 final_purge_entry = None
 behind_cycle_entry = None
+setpoint_entry = None
 temperature_entry = None
 
 
@@ -65,6 +66,7 @@ def save_data(text_frame, text_field, run_button):
     cycle_time = cycle_time_entry.get()
     final_purge_time = final_purge_entry.get()
     behind_cycle_time = behind_cycle_entry.get()
+    setpoint_entry = setpoint_entry.get()
     temperature = temperature_entry.get()
 
     saved_info = f"Number of Cycles : {num_cycles}\n"
@@ -72,6 +74,7 @@ def save_data(text_frame, text_field, run_button):
     saved_info += f"Cycle Time (in s): {cycle_time}\n"
     saved_info += f"Final Purge Time (in s): {final_purge_time}\n"
     saved_info += f"Behind Cycle Time (in s): {behind_cycle_time}\n"
+    saved_info += f"Setpoint: {setpoint_entry}\n"
     saved_info += f"Temperature (in celcius): {temperature}\n"
 
     # Write script in text file
@@ -178,13 +181,20 @@ def load_csv_data(filename):
     global behind_cycle_entry
     behind_cycle_entry = ttk.Entry(config_frame)
     behind_cycle_entry.grid(row=3, column=1)
-    
+
     # Final Purge Time
     final_purge_label = ttk.Label(config_frame, text="Final Purge Time (in s):")
     final_purge_label.grid(row=4, column=0)
     global final_purge_entry
     final_purge_entry = ttk.Entry(config_frame)
     final_purge_entry.grid(row=4, column=1)
+
+    # Setpoint
+    setpoint_label = ttk.Label(config_frame, text="Setpoint ([0-100]):")
+    setpoint_label.grid(row=5, column=0)
+    global setpoint_entry
+    setpoint_entry = ttk.Entry(config_frame)
+    setpoint_entry.grid(row=5, column=1)
 
     # Temperature
     temperature_label = ttk.Label(config_frame, text="Temperature ([25-300])\xb0C:")
