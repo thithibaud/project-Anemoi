@@ -49,7 +49,6 @@ class CredentialGUI:
         self.login_button.grid(row=2, columnspan=2, pady=10)
 
     def run_login_script(self):
-        # sourcery skip: extract-duplicate-method, extract-method, inline-variable, remove-redundant-fstring
         # Disable the login button to prevent multiple submissions
         self.login_button.config(state="disabled")
 
@@ -61,7 +60,7 @@ class CredentialGUI:
             # Check if instrument are connected before running it
             if os.path.exists("/dev/ttyUSBPort2"):
                 root.state(newstate="withdraw")
-                command = f"python3 connect_mfc.py"
+                command = "python3 connect_mfc.py"
                 os.system(command)
                 root.state(newstate="normal")
             else:
@@ -73,7 +72,7 @@ class CredentialGUI:
             os.environ["user_id"] = user_id
             os.environ["password"] = password
             root.state(newstate="withdraw")
-            command = f"python3 select_mode.py"
+            command = "python3 select_mode.py"
             os.system(command)
             root.state(newstate="normal")
 

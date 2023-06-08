@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 
-# sourcery skip: de-morgan, for-append-to-extend
 from datetime import datetime
 import tkinter as tk
 from tkinter import ttk
@@ -24,7 +23,7 @@ root.title("Mass Flow Sensor Configuration")
 root.geometry("+200+1")
 # os variable
 filename = os.environ.get("data_config_filename")
-if not ((filename is not None) and os.path.exists(filename)):
+if filename is None or not os.path.exists(filename):
     filename = filedialog.askopenfilename(filetypes=[("CSV Files", "*.csv")])
 
 if filename:
@@ -41,8 +40,7 @@ mfc = com.Control_FlowBus("/dev/ttyUSBPort2")
 
 # Create a list to hold the nodes
 nodes = []
-for i in range(6, 6 + num_sensors):
-    nodes.append(data[i][0])
+nodes.extend(data[i][0] for i in range(6, 6 + num_sensors))
 print(nodes)
 
 # Initialize the graph data
