@@ -50,6 +50,7 @@ x_data = {}
 y_data = {}
 setpoint_data = {}
 measurement = {}
+unit = {}
 setpoint = {}
 measurement_label = {}
 setpoint_slider = {}
@@ -154,6 +155,7 @@ def update_measurement(node):
     if isinstance(node, tuple):
         node = node[0]
     # Get the current measurement and setpoint
+    unit[node] = mfc.get_unit(node)
     measurement[node] = mfc.get_measurement(str(node))
     setpoint[node] = mfc.get_setpoint(str(node))
 
@@ -163,7 +165,7 @@ def update_measurement(node):
         setpoint_float = float(setpoint[node])
 
         # Update the measurement label and setpoint slider
-        measurement_label[node].config(text=f"Measurement: {measurement_float}")
+        measurement_label[node].config(text=f"Measurement: {measurement_float} {unit[node]}")
         setpoint_slider[node].set(setpoint_float)
 
         # Update the setpoint labels
