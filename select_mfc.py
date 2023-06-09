@@ -35,7 +35,7 @@ def load_csv():
 def create_interface(num_sensors):
     # Create a list to hold the sensor-gas mappings
     mappings = []
-    # Create labels and dropdowns for each sensor
+    # Create labels and comboboxes for each sensor
     for i in range(num_sensors):
         node = data[2][i]
         capacity = elflow.get_capacity(node)
@@ -44,13 +44,13 @@ def create_interface(num_sensors):
         label.grid(row=i, column=0, padx=5, pady=5)
 
         # gas options
-        gas_options = ["SA"]  # Replace with your own gas options
+        gas_options = ["SA"]
         for j in range(num_sensors - 1):
             gas_options.append(f"gas {j+1}")
         var = tk.StringVar(root)
         var.set(gas_options[0])  # Set default value to the first gas option
-        dropdown = ttk.OptionMenu(root, var, *gas_options)
-        dropdown.grid(row=i, column=1, padx=5, pady=5)
+        combobox = ttk.Combobox(root, textvariable=var, state="readonly",  values=gas_options)
+        combobox.grid(row=i, column=1, padx=5, pady=5)
 
         mappings.append((data[2][i], var))  # Store the node-gas mapping
 
@@ -71,6 +71,7 @@ def create_interface(num_sensors):
     ok_button.grid(row=num_sensors, columnspan=2, padx=5, pady=10)
 
     root.mainloop()
+
 
 
 # Example usage

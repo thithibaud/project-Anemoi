@@ -14,13 +14,14 @@ import comunicacion as com
 import os
 import csv
 import time
+import struct
 
 os.environ["QT_LOGGING_RULES"] = "qt5ct.debug=false"
 
 # Create the main window
 root = tk.Tk()
 sv_ttk.use_light_theme()
-root.title("Mass Flow Sensor Configuration")
+root.title("Mass Flow Manual mode")
 root.geometry("+200+1")
 # os variable
 filename = os.environ.get("data_config_filename")
@@ -52,6 +53,7 @@ setpoint_data = {}
 measurement = {}
 unit = {}
 setpoint = {}
+capacity = {}
 measurement_label = {}
 setpoint_slider = {}
 current_setpoint_label = {}
@@ -156,16 +158,19 @@ def update_measurement(node):
         node = node[0]
     # Get the current measurement and setpoint
     unit[node] = mfc.get_unit(node)
-    measurement[node] = mfc.get_measurement(str(node))
+    capacity[node] = mfc.get_capacity(str(node))
+    measurement[node] = int(mfc.get_measurement(str(node)),16)
     setpoint[node] = mfc.get_setpoint(str(node))
+    #print(measurement[node])
 
     try:
         # Convert measurement and setpoint to float
-        measurement_float = float(measurement[node])
+        
+        measurement_float = float(measurement[node]*capacity[node]/32000)
         setpoint_float = float(setpoint[node])
 
         # Update the measurement label and setpoint slider
-        measurement_label[node].config(text=f"Measurement: {measurement_float} {unit[node]}")
+        measurement_label[node].config(text=f"Measurement: {measurement_float:.2f} {unit[node]}")
         setpoint_slider[node].set(setpoint_float)
 
         # Update the setpoint labels
