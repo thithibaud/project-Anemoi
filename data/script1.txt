@@ -1,6 +1,7 @@
 Number of Cycles : 5
-Start Purge Time (in s): 5
-Cycle Time (in s): 10
+Start Purge Time (in s): 10
+Cycle Time (in s): 20
 Final Purge Time (in s): 10
-Behind Cycle Time (in s): 5
-Temperature (in celcius): 50
+Behind Cycle Time (in s): 10
+Setpoint: 85
+Temperature (in celcius): 120

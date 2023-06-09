@@ -58,6 +58,8 @@ y_data = {}
 setpoint_data = {}
 measurement = {}
 setpoint = {}
+capacity = {}
+unit = {}
 setpoint_entry = 00
 start_time = float(0)
 
@@ -293,9 +295,11 @@ def update_current_measurments():
     power_supply_label.config(text=f"Power Supply Status: Current :{current:.3f}A, Voltage :{voltage}V")
     for gas, node in dict_nodes.items():
         setpoint[node] = mfc.get_setpoint(str(node))
-        measurement[node] = mfc.get_measurement(str(node))
+        capacity[node] = mfc.get_capacity(str(node))
+        unit[node] = mfc.get_unit(node)
+        measurement[node] = int(mfc.get_measurement(str(node)),16)*capacity[node]/32000
         measurement_label[node].config(
-            text=f"MFC for {gas}, Setpoint: {setpoint[node]},  Measurement :{measurement[node]}"
+            text=f"MFC for {gas}, Setpoint: {setpoint[node]},  Measurement :{measurement[node]:.2f} {unit[node]}"
         )
 
         # Update time
@@ -318,7 +322,7 @@ def update_temperature(temperature):  # sourcery skip: extract-duplicate-method
     expected_temp_label.config(text=f"Expected Temperature: {temperature}\xb0C")
     if temperature >= 30:
         current = 0.1303 * math.log(temperature) - 0.4116
-        print(f"Current : {current}")
+        print(f"Set Current to : {current}A")
         dps.setVoltage(5)
         dps.setCurrent(current)
         dps.setOutput(True)
