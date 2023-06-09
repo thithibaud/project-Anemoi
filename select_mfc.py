@@ -4,6 +4,7 @@ import csv
 import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter import filedialog
+import comunicacion as com
 import sv_ttk
 import os
 
@@ -11,7 +12,7 @@ root = tk.Tk()
 sv_ttk.use_light_theme()
 root.title("Mass Flow Sensor Configuration")
 root.geometry("+200+200")
-
+elflow = com.Control_FlowBus("/dev/ttyUSBPort2")
 
 def load_csv():
     global filename
@@ -36,7 +37,10 @@ def create_interface(num_sensors):
     mappings = []
     # Create labels and dropdowns for each sensor
     for i in range(num_sensors):
-        label = ttk.Label(root, text=f"Sensor {i+1} with SN {data[3][i]}:")
+        node = data[2][i]
+        capacity = elflow.get_capacity(node)
+        unit = elflow.get_unit(node)
+        label = ttk.Label(root, text=f"Sensor {i+1} with SN {data[3][i]}  and capacity {capacity} {unit}:")
         label.grid(row=i, column=0, padx=5, pady=5)
 
         # gas options
