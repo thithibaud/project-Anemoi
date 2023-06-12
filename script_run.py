@@ -160,10 +160,11 @@ def start_script():
     cancel_button.config(state="normal")
     retry_button.config(state="disabled")
     start_button.config(state="disabled")
+    if script_index == 0:
+        start_time = time.time()
     if script_index < len(array_script[0]) and not cancel_flag:
         current_operation = array_script[0][script_index]
         current_time = array_script[1][script_index]
-        start_time = time.time()
         update_MFCs(current_operation)
         current_operation_label.config(text=f"Current Operation: {current_operation}")
         loading_bar_update(current_time, start_time)
